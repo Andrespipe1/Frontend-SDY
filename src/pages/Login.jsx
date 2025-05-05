@@ -1,5 +1,11 @@
 import { Link } from "react-router";
+import {useNavigate} from "react-router-dom";
+import Mensaje from "../components/Alerts/Mensaje";
+import axios from "axios";
+
 const Login = () => {
+  const navigate = useNavigate();
+  const [mensaje, setMensaje] = useState({});
   return (
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">

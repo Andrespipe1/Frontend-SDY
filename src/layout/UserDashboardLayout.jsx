@@ -25,13 +25,13 @@ const UserDashboardLayout = () => {
     <div className="min-h-screen bg-gray-100 pt-16 pb-16 flex flex-col relative">
       <Header />
 
-      {/* Botón menú visible solo en móviles */}
-      <div className="md:hidden fixed top-16 left-0 w-full bg-white shadow z-30 p-3 flex justify-between items-center">
-        <span className="font-semibold text-gray-800">Dashboard</span>
-        <button onClick={() => setIsSidebarOpen(true)}>
-          <MenuIcon className="w-6 h-6 text-gray-700" />
-        </button>
-      </div>
+  {/* Botón menú visible solo en móviles */}
+  <div className="md:hidden fixed top-16 left-0 w-full bg-white shadow z-30 p-3 flex justify-between items-center">
+    <button onClick={() => setIsSidebarOpen(true)} className="flex items-center gap-2">
+      <MenuIcon className="w-6 h-6 text-gray-700" />
+      <span className="font-semibold text-gray-800"></span>
+    </button>
+  </div>
 
       {/* Overlay oscuro al abrir menú móvil */}
       {isSidebarOpen && (

@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import RecuperarPassword from './pages/RecuperarPassword'
+
 import NotFound from './pages/NotFound'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Landing from './pages/Landing'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import RecuperarPassword from './pages/RecuperarPassword'
 import UserDashboardLayout from './layout/UserDashboardLayout'
 function App() {
 
