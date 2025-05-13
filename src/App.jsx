@@ -7,21 +7,25 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import RecuperarPassword from './pages/RecuperarPassword'
 import UserDashboardLayout from './layout/UserDashboardLayout'
+import { AuthProvider } from './context/AuthContext'
+import NutriDashboardLayout from './layout/NutriDashboardLayout'
 function App() {
 
   return (
     <>
       <BrowserRouter>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<Landing/>}/>
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="dashboard" element={<UserDashboardLayout />}/>
+          <Route path="dashboard_Nutri" element={<NutriDashboardLayout />}/>
+  
           <Route path="recuperar-password" element={<RecuperarPassword />} />
           <Route path="*" element={<NotFound />} />
-
-
         </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </>
   )

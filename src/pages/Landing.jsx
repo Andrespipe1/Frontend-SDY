@@ -1,18 +1,18 @@
 import { Link } from 'react-router-dom';
-
+import logo from '../assets/Logo.jpg';
 const LandingPage = () => {
     return (
         <div>
             <main className='bg-[#F5F5F5] px-4 md:px-10 lg:px-20 xl:px-40'>
                 <section className='px-4 md:px-10 lg:px-20 xl:px-40'>
                     <nav className='p-6 flex justify-between items-center'>
-                        <h1 className='text-3xl font-semibold text-indigo-600'>
+                        <h1 className='text-3xl font-semibold bg-gradient-to-r from-green-500 to-blue-600 bg-clip-text text-transparent'>
                             SALUDIFI
                         </h1>
                     </nav>
 
                     <div className='text-center pt-16'>
-                        <h2 className="text-5xl font-bold text-indigo-600 mb-4 md:text-6xl">
+                        <h2 className="text-5xl font-bold bg-gradient-to-r from-green-500 to-blue-600 bg-clip-text text-transparent mb-6 md:text-6xl">
                             TRANSFORMA TU SALUD CON TECNOLOGÍA
                         </h2>
 
@@ -27,15 +27,17 @@ const LandingPage = () => {
 
                         <Link 
                             to="/login" 
-                            className='bg-indigo-600 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 hover:bg-indigo-700 hover:shadow-lg mt-6 inline-block'>
+                            className='bg-gradient-to-r from-green-400 to-blue-600 text-white px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 hover:bg-green-500 hover:shadow-lg mt-6 inline-block'>
                             ¡Empieza ahora!
                         </Link>
                     </div>
 
-                    <div className='relative mx-auto mt-12 w-72 h-72 md:w-96 md:h-96 bg-indigo-600 rounded-full overflow-hidden shadow-lg'>
-                        <div className='w-full h-full flex items-center justify-center text-white text-3xl font-bold'>
-                            LOGO
-                        </div>
+                    <div className='relative mx-auto mt-12 w-72 h-72 md:w-96 md:h-96 bg-gradient-to-b from-green-400 to-green-600 rounded-full overflow-hidden shadow-lg dark:from-orange-300 dark:to-orange-500'>
+                        <img 
+                            src={logo} 
+                            alt="logo-salud" 
+                            className='w-full h-full object-cover transition-all duration-500 transform hover:scale-102'
+                        />
                     </div>
                 </section>
 

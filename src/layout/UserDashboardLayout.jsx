@@ -77,7 +77,7 @@ const UserDashboardLayout = () => {
 
       {/* Sidebar Desktop */}
       <div className="flex flex-grow">
-        <aside className="hidden md:flex flex-col w-64 bg-white shadow-lg p-6 fixed top-16 bottom-16 left-0 z-10 gap-4">
+        <aside className=" hidden md:flex flex-col w-64 bg-white shadow-lg p-6 fixed top-16 bottom-16 left-0 z-10 gap-4">
           {links.map(({ to, icon, text }) => (
             <NavLink
               key={to}
