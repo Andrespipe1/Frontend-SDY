@@ -27,7 +27,7 @@ const Login = () => {
   const handleSubmit = async (e) => { 
       e.preventDefault();
       // Utilizamos un solo endpoint para login
-      const url = `${import.meta.env.VITE_BACKEND_URL}/login`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/paciente/login`;
   
       try {
           const respuesta = await axios.post(url, form);
@@ -37,7 +37,7 @@ const Login = () => {
           // Establecer los datos del usuario en el estado
           setUser({ nombre, apellido, edad, direccion, celular, _id, userEmail, rol });
           if (rol==="nutricionista") {
-              navigate("/dashboardNutri");
+              navigate("/dashboard_Nutri");
           }else if (rol==="paciente") {
               navigate("/dashboard");
           } 

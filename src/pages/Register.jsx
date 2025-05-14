@@ -13,7 +13,7 @@ const Register = () => {
         direccion: "",
         celular: "",
         email: "",
-        password: "",
+        password: ""
     });
 
     const handleChange = (e) => {
