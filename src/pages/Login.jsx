@@ -27,7 +27,7 @@ const Login = () => {
   const handleSubmit = async (e) => { 
       e.preventDefault();
       // Utilizamos un solo endpoint para login
-      const url = `${import.meta.env.VITE_BACKEND_URL}/paciente/login`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/login`;
   
       try {
           const respuesta = await axios.post(url, form);
