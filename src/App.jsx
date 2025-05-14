@@ -9,6 +9,8 @@ import RecuperarPassword from './pages/RecuperarPassword'
 import UserDashboardLayout from './layout/UserDashboardLayout'
 import { AuthProvider } from './context/AuthContext'
 import NutriDashboardLayout from './layout/NutriDashboardLayout'
+import RestablecerPassword from './pages/RestablecerPassword'
+import ConfirmarCuenta from './pages/ConfirmarCuenta'
 function App() {
 
   return (
@@ -23,6 +25,8 @@ function App() {
           <Route path="dashboard_Nutri" element={<NutriDashboardLayout />}/>
   
           <Route path="recuperar-password" element={<RecuperarPassword />} />
+          <Route path="recuperar-password/:token" element={<RestablecerPassword/>}/>
+          <Route path="/confirmar/:token" element={<ConfirmarCuenta />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         </AuthProvider>

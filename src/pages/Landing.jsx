@@ -76,7 +76,7 @@ const ServiceCard = ({ title, description }) => {
             <div className='mx-auto mb-4 w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-xl font-bold text-gray-600'>
                 {title.charAt(0)}
             </div>
-            <h3 className='text-lg font-medium pb-2 text-indigo-600'>{title}</h3>
+            <h3 className='text-lg font-medium pb-2 text-green-600'>{title}</h3>
             <p className='text-gray-800'>{description}</p>
         </div>
     );
