@@ -14,6 +14,8 @@ import NutriDashboardLayout from './layout/NutriDashboardLayout';
 import Perfil from './pages/Perfil';
 
 import { AuthProvider } from './context/AuthContext';
+import PerfilNutri from './pages/PerfilNutri';
+import ListarPacientes from './pages/ListarPacientes';
 
 function App() {
   return (
@@ -35,8 +37,11 @@ function App() {
           </Route>
 
           {/* Rutas protegidas para nutricionistas (por si luego agregas más subrutas) */}
-          <Route path="/dashboard_Nutri" element={<NutriDashboardLayout />} />
+          <Route path="/dashboard_Nutri" element={<NutriDashboardLayout />} >
+          <Route path="perfilNutri" element={<PerfilNutri />} />
+          <Route path="listarPacientes" element={<ListarPacientes />} />
 
+          </Route>
           {/* Página no encontrada */}
           <Route path="*" element={<NotFound />} />
         </Routes>

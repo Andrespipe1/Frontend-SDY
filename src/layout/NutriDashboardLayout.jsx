@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
-import Header from '../components/Header'
+import Header from '../components/HeaderNutri'
 import Footer from '../components/Footer'
 import {
   UserIcon,
@@ -15,8 +15,8 @@ const NutriDashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const links = [
-    { to: 'perfil', icon: <UserIcon className="w-5 h-5" />, text: 'Perfil' },
-    { to: 'registro', icon: <FileTextIcon className="w-5 h-5" />, text: 'Registro' },
+    { to: 'perfilNutri', icon: <UserIcon className="w-5 h-5" />, text: 'Perfil' },
+    { to: 'listarPacientes', icon: <FileTextIcon className="w-5 h-5" />, text: 'Pacientes' },
     { to: 'chat', icon: <MessageCircleIcon className="w-5 h-5" />, text: 'Chat' },
     { to: 'recomendaciones', icon: <HeartPulseIcon className="w-5 h-5" />, text: 'Recomendaciones' },
   ]

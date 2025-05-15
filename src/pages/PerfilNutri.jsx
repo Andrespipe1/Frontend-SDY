@@ -24,7 +24,7 @@ const PerfilNutri = () => {
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
-        const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/perfil`, {
+        const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/perfilNutri`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -53,7 +53,7 @@ const PerfilNutri = () => {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/paciente/perfil/${perfil._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/perfil-nutricionista/${perfil._id}`,
         perfil,
         {
           headers: {
@@ -73,7 +73,7 @@ const PerfilNutri = () => {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/paciente/actualizar-password/${perfil._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/nutricionista/actualizar-password/${perfil._id}`,
         passwordForm,
         {
           headers: {
@@ -214,6 +214,4 @@ const PerfilNutri = () => {
 };
 
 export default PerfilNutri;
-
-
 
