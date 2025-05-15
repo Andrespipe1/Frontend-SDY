@@ -10,7 +10,7 @@ const Header = () => {
   }
 
   return (
-    <header className="bg-indigo-600 text-white py-3 px-6 flex justify-between items-center fixed top-0 w-full z-50 shadow-md">
+    <header className="bg-gradient-to-r from-green-400 to-blue-600 text-white py-3 px-6 flex justify-between items-center fixed top-0 w-full z-50 shadow-md">
       <h1 className="text-xl font-bold">SALUDIFY :V</h1>
       <button
         onClick={handleLogout}
