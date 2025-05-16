@@ -53,7 +53,7 @@ const PerfilNutri = () => {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/paciente/perfil/${perfil._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/paciente/${perfil._id}`,
         perfil,
         {
           headers: {

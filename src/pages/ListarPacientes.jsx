@@ -86,7 +86,7 @@ const ListarPacientes = () => {
   };
 
   return (
-    <div className="min-h-full px-6 py-12 lg:px-8">
+    <div className="min-h-full px-6 py-2 lg:px-8">
       {/* Botón de Casita en la esquina izquierda */}
       <Link to="/dashboard_Nutri" className="absolute top-6 left-6 p-2 bg-gradient-to-r from-green-400 to-blue-600 text-white rounded-full hover:bg-green-700">
         <FaHome size={24} />
