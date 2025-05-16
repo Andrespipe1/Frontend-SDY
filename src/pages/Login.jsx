@@ -26,49 +26,52 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     
-    const url = `${import.meta.env.VITE_BACKEND_URL}/login`; // Asegúrate de que la ruta es correcta
-    
+    // Validación básica de campos
+    if (!form.email || !form.password) {
+      setMensaje({ respuesta: "Todos los campos son obligatorios", tipo: false });
+      setLoading(false);
+      return;
+    }
+
     try {
+      const url = `${import.meta.env.VITE_BACKEND_URL}/login`;
       const { data } = await axios.post(url, form);
       
-      // La respuesta del backend ahora tiene esta estructura:
-      // {
-      //   success: true,
-      //   token: "...",
-      //   user: { _id, nombre, apellido, email, rol, ...otrosDatos }
-      // }
-      
-      // Guardar el token en localStorage
+      // Verificar que la respuesta contiene token y user
+      if (!data.token || !data.user) {
+        throw new Error("Respuesta inválida del servidor");
+      }
+
+      // Guardar token en localStorage
       localStorage.setItem('token', data.token);
       
-      // Guardar datos del usuario en localStorage o contexto
+      // Guardar datos del usuario en localStorage o contexto según tu arquitectura
       localStorage.setItem('user', JSON.stringify(data.user));
       
-      // Redirección basada en el rol
+      // Redirigir según el rol
       if (data.user.rol === "nutricionista") {
         navigate("/dashboard_Nutri");
       } else if (data.user.rol === "paciente") {
         navigate("/dashboard");
+      } else {
+        setMensaje({ respuesta: "Rol de usuario no reconocido", tipo: false });
       }
       
     } catch (error) {
       console.error("Error en login:", error);
       
-      // Manejo de errores mejorado
-      const errorMsg = error.response?.data?.msg || 
-                      error.response?.data?.message || 
-                      "Ocurrió un error al iniciar sesión";
+      // Manejo de errores específicos
+      let errorMsg = "Ocurrió un error al iniciar sesión";
+      if (error.response) {
+        // Error de respuesta del servidor
+        errorMsg = error.response.data?.msg || errorMsg;
+      } else if (error.request) {
+        // Error de conexión
+        errorMsg = "No se pudo conectar al servidor";
+      }
       
-      setMensaje({ 
-        respuesta: errorMsg, 
-        tipo: false 
-      });
-      
-      setForm({ email: "", password: "" });
-      
-      setTimeout(() => {
-        setMensaje({});
-      }, 3000);
+      setMensaje({ respuesta: errorMsg, tipo: false });
+      setTimeout(() => setMensaje({}), 3000);
     } finally {
       setLoading(false);
     }
