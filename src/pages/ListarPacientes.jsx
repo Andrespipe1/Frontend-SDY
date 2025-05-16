@@ -23,16 +23,29 @@ const ListarPacientes = () => {
             Authorization: `Bearer ${token}`
           }
         });
-        setPacientes(data);
+        
+        // Verificar la estructura de la respuesta
+        if (data.success && Array.isArray(data.pacientes)) {
+          setPacientes(data.pacientes);
+        } else {
+          throw new Error('Formato de datos inesperado de la API');
+        }
       } catch (error) {
-        setMensaje({ respuesta: error.response?.data?.msg || 'Error al obtener pacientes', tipo: false });
+        console.error('Error al obtener pacientes:', error);
+        setMensaje({ 
+          respuesta: error.response?.data?.msg || 
+                   error.message || 
+                   'Error al obtener pacientes', 
+          tipo: false 
+        });
+        setPacientes([]);
       } finally {
         setLoading(false);
       }
     };
 
     obtenerPacientes();
-  }, []);
+  }, [token]);
 
   // Eliminar paciente
   const handleEliminarPaciente = async (id) => {
@@ -47,7 +60,10 @@ const ListarPacientes = () => {
         // Actualizar lista después de eliminar
         setPacientes(pacientes.filter(paciente => paciente._id !== id));
       } catch (error) {
-        setMensaje({ respuesta: error.response?.data?.msg || 'Error al eliminar paciente', tipo: false });
+        setMensaje({ 
+          respuesta: error.response?.data?.msg || 'Error al eliminar paciente', 
+          tipo: false 
+        });
       }
     }
   };
@@ -108,7 +124,13 @@ const ListarPacientes = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-
+        <Link
+          to="/registrar-paciente"
+          className="flex items-center justify-center px-4 py-2 bg-gradient-to-r from-green-400 to-blue-600 text-white rounded-md hover:bg-green-700"
+        >
+          <FaUserPlus className="mr-2" />
+          Nuevo Paciente
+        </Link>
       </div>
 
       {/* Tabla de pacientes */}
