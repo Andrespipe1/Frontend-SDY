@@ -91,7 +91,7 @@ const PerfilNutri = () => {
   };
 
   return (
-    <div className="flex flex-col items-center px-6 py-12">
+    <div className="flex flex-col items-center px-6">
       {/* Contenedor fijo para mensajes en la parte superior */}
       <div className="w-full lg:w-2/3 mb-6 fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
         {Object.keys(mensaje).length > 0 && (
