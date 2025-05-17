@@ -13,8 +13,9 @@ const LandingPage = () => {
                     <nav className='p-6 flex justify-between items-center'>
                         <h1 className='text-3xl font-semibold bg-gradient-to-r from-green-500 to-blue-600 bg-clip-text text-transparent'>
                             SALUDIFY
+                            
                         </h1>
-                        <img src="" alt="" />
+                        
                     </nav>
 
                     <div className='text-center pt-16'>

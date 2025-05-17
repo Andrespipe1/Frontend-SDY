@@ -16,6 +16,7 @@ import Perfil from './pages/Perfil';
 import { AuthProvider } from './context/AuthContext';
 import PerfilNutri from './pages/PerfilNutri';
 import ListarPacientes from './pages/ListarPacientes';
+import ListarFormularios from './pages/Formularios';
 
 function App() {
   return (
@@ -33,6 +34,8 @@ function App() {
           {/* Rutas protegidas para usuarios */}
           <Route path="/dashboard" element={<UserDashboardLayout />}>
             <Route path="perfil" element={<Perfil />} />
+            <Route path="registro" element={<ListarFormularios />} />
+
             {/* Aquí puedes agregar más rutas dentro del dashboard del usuario uwu */}
           </Route>
 

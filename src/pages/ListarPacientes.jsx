@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Mensaje from '../components/Alerts/Mensaje';
-import { FaHome, FaUserEdit, FaTrash, FaUserPlus, FaSearch } from 'react-icons/fa';
+import { FaHome, FaUserEdit, FaTrash, FaUser, FaSearch } from 'react-icons/fa';
 import logo from '../assets/LogoF.png';
 
 const ListarPacientes = () => {
@@ -88,10 +88,6 @@ const ListarPacientes = () => {
 
   return (
     <div className="min-h-full px-6 py-2 lg:px-8">
-      {/* Botón de Casita en la esquina izquierda */}
-      <Link to="/dashboard_Nutri" className="absolute top-6 left-6 p-2 bg-gradient-to-r from-green-400 to-blue-600 text-white rounded-full hover:bg-green-700">
-        <FaHome size={24} />
-      </Link>
 
       {/* Logo y título */}
       <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
@@ -129,7 +125,7 @@ const ListarPacientes = () => {
           to="/registrar-paciente"
           className="flex items-center justify-center px-4 py-2 bg-gradient-to-r from-green-400 to-blue-600 text-white rounded-md hover:bg-green-700"
         >
-          <FaUserPlus className="mr-2" />
+          <FaUser className="mr-2" />
           Nuevo Paciente
         </Link>
       </div>
@@ -183,14 +179,14 @@ const ListarPacientes = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={() => navigate(`/editar-paciente/${paciente._id}`)}
-                        className="text-green-600 hover:text-green-900 mr-4"
+                        className="text-green-600 hover:text-green-900 mr-4 cursor-pointer"
                         title="Editar"
                       >
-                        <FaUserEdit size={18} />
+                        <FaUser size={18} />
                       </button>
                       <button
                         onClick={() => handleEliminarPaciente(paciente._id)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-red-600 hover:text-red-900 cursor-pointer"
                         title="Eliminar"
                       >
                         <FaTrash size={18} />
