@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import Mensaje from "../components/Alerts/Mensaje";
-import logo from '../assets/Logo.jpg'; // mismo logo que login
+import logo from '../assets/LogoF.png'; // mismo logo que login
 
 const ConfirmarCuenta = () => {
   const [mensaje, setMensaje] = useState({});

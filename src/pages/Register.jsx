@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState } from "react";
 import Mensaje from '../components/Alerts/Mensaje';
 import axios from 'axios';
-import logo from '../assets/Logo.jpg';
+import logo from '../assets/LogoF.png';
 const Register = () => {
 
     const [mensaje, setMensaje] = useState({});

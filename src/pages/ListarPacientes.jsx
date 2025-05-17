@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Mensaje from '../components/Alerts/Mensaje';
 import { FaHome, FaUserEdit, FaTrash, FaUserPlus, FaSearch } from 'react-icons/fa';
-import logo from '../assets/Logo.jpg';
+import logo from '../assets/LogoF.png';
 
 const ListarPacientes = () => {
   const navigate = useNavigate();
@@ -14,6 +14,11 @@ const ListarPacientes = () => {
 
   const token = localStorage.getItem('token');
 
+    // Función para mostrar mensaje con temporizador
+    const mostrarMensaje = (nuevoMensaje) => {
+      setMensaje(nuevoMensaje);
+      setTimeout(() => setMensaje({}), 3000);
+    };
   // Obtener lista de pacientes
   useEffect(() => {
     const obtenerPacientes = async () => {
@@ -32,7 +37,7 @@ const ListarPacientes = () => {
         }
       } catch (error) {
         console.error('Error al obtener pacientes:', error);
-        setMensaje({ 
+        mostrarMensaje({ 
           respuesta: error.response?.data?.msg || 
                    error.message || 
                    'Error al obtener pacientes', 
@@ -56,11 +61,11 @@ const ListarPacientes = () => {
             Authorization: `Bearer ${token}`
           }
         });
-        setMensaje({ respuesta: 'Paciente eliminado correctamente', tipo: true });
+        mostrarMensaje({ respuesta: 'Paciente eliminado correctamente', tipo: true });
         // Actualizar lista después de eliminar
         setPacientes(pacientes.filter(paciente => paciente._id !== id));
       } catch (error) {
-        setMensaje({ 
+        mostrarMensaje({ 
           respuesta: error.response?.data?.msg || 'Error al eliminar paciente', 
           tipo: false 
         });
@@ -79,11 +84,7 @@ const ListarPacientes = () => {
     );
   });
 
-  // Función para mostrar mensaje con temporizador
-  const mostrarMensaje = (nuevoMensaje) => {
-    setMensaje(nuevoMensaje);
-    setTimeout(() => setMensaje({}), 5000);
-  };
+
 
   return (
     <div className="min-h-full px-6 py-2 lg:px-8">

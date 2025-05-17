@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Mensaje from '../components/Alerts/Mensaje';
 import { FaHome } from 'react-icons/fa';
-import logo from '../assets/Logo.jpg';
+import logo from '../assets/LogoF.png';
 
 const RestablecerPassword = () => {
   const { token } = useParams();

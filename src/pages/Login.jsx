@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Mensaje from "../components/Alerts/Mensaje";
 import axios from "axios";
-import logo from '../assets/Logo.jpg';
+import logo from '../assets/LogoF.png';
 import { FaHome } from 'react-icons/fa';
 
 const Login = () => {
