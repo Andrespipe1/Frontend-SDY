@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { FaSearch, FaClipboardList, FaUtensils } from 'react-icons/fa';
-import logo from '../assets/LogoF.png';
+import {  FaClipboardList, FaUtensils } from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
 import ParametrosSalud from './ParametrosSalud';
 import FormularioComidas from './Comidas';
@@ -16,7 +15,7 @@ const Formularios = () => {
   };
 
   const handleSubmit = () => {
-    // Lógica para guardar los datos
+    
     mostrarMensaje({
       respuesta: 'Datos guardados correctamente',
       tipo: true
@@ -68,18 +67,7 @@ const Formularios = () => {
           {activeTab === 'salud' ? <ParametrosSalud /> : <FormularioComidas />}
         </div>
 
-        {/* Acciones */}
-        <div className="flex justify-end space-x-4">
-          <button className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
-            Cancelar
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg hover:from-blue-700 hover:to-blue-900 shadow-md"
-          >
-            Guardar Registro
-          </button>
-        </div>
+
       </div>
     </div>
   );
