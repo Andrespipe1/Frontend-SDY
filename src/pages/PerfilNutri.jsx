@@ -60,7 +60,7 @@ const PerfilNutri = () => {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/paciente/${perfil._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/perfil-nutricionista/${perfil._id}`,
         perfil,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -77,7 +77,7 @@ const PerfilNutri = () => {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/paciente/actualizar-password/${perfil._id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/nutricionista/actualizar-password/${perfil._id}`,
         passwordForm,
         { headers: { Authorization: `Bearer ${token}` } }
       );

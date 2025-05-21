@@ -136,22 +136,23 @@ const ParametrosSalud = () => {
 
   const actualizarParametros = async () => {
     try {
+      // Actualizar los parámetros del paciente
       await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/actualizar-parametro/${currentEditId}`,
-        {...parametros,paciente: pacienteId},
+        { ...parametros, paciente: pacienteId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+  
       mostrarMensaje({ respuesta: 'Datos actualizados correctamente', tipo: true });
-      
-      // Actualizar historial
+  
+      // Obtener el historial actualizado
       const { data } = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/paciente/parametro/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/paciente/parametro/${pacienteId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setHistorial(data.parametros || []);
-      
-      // Resetear formulario
+  
+      // Resetear el formulario
       setParametros({
         peso: '',
         estatura: '',
@@ -162,6 +163,7 @@ const ParametrosSalud = () => {
       setIsEditing(false);
       setCurrentEditId(null);
     } catch (error) {
+      console.error('Error al actualizar los datos:', error); // Agrega un log para depuración
       mostrarMensaje({
         respuesta: error.response?.data?.msg || 'Error al actualizar los datos',
         tipo: false
@@ -436,9 +438,9 @@ const ParametrosSalud = () => {
 
             {/* Botones de acción */}
             <div className="col-span-1 lg:col-span-3 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 mt-4">
-              {isEditing && (
+            {isEditing && (
                 <button
-                  type="button"
+                  type="button" // Evita que dispare el evento onSubmit
                   onClick={cancelarEdicion}
                   className="px-4 py-2 sm:px-6 sm:py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base"
                 >
@@ -532,7 +534,8 @@ const ParametrosSalud = () => {
                             </span>
                           </td>
                           <td className="px-3 py-3 whitespace-nowrap text-xs sm:text-sm font-medium space-x-1 sm:space-x-2">
-                            <button
+                          <button
+                              type="button" // Evita que dispare el evento onSubmit
                               onClick={() => cargarDatosParaEdicion(registro)}
                               className="text-blue-600 hover:text-blue-900 p-1"
                               title="Editar"

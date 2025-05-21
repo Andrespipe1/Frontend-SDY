@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Mensaje from '../components/Alerts/Mensaje';
 import { FaHome, FaUserEdit, FaTrash, FaUser, FaSearch } from 'react-icons/fa';
 import logo from '../assets/LogoF.png';
+import ModalPaciente from '../components/Modal';
 
 const ListarPacientes = () => {
-  const navigate = useNavigate();
   const [pacientes, setPacientes] = useState([]);
   const [mensaje, setMensaje] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-
+  const [modalAbierto, setModalAbierto] = useState(false);
+  const [pacienteSeleccionado, setPacienteSeleccionado] = useState(null);
   const token = localStorage.getItem('token');
 
-    // Función para mostrar mensaje con temporizador
-    const mostrarMensaje = (nuevoMensaje) => {
-      setMensaje(nuevoMensaje);
-      setTimeout(() => setMensaje({}), 3000);
-    };
+  // Función para mostrar mensaje con temporizador
+  const mostrarMensaje = (nuevoMensaje) => {
+    setMensaje(nuevoMensaje);
+    setTimeout(() => setMensaje({}), 3000);
+  };
+
   // Obtener lista de pacientes
   useEffect(() => {
     const obtenerPacientes = async () => {
@@ -29,7 +30,6 @@ const ListarPacientes = () => {
           }
         });
         
-        // Verificar la estructura de la respuesta
         if (data.success && Array.isArray(data.pacientes)) {
           setPacientes(data.pacientes);
         } else {
@@ -62,6 +62,8 @@ const ListarPacientes = () => {
           }
         });
         mostrarMensaje({ respuesta: 'Paciente eliminado correctamente', tipo: true });
+        // Cerrar modal si está abierto
+        setModalAbierto(false);
         // Actualizar lista después de eliminar
         setPacientes(pacientes.filter(paciente => paciente._id !== id));
       } catch (error) {
@@ -71,6 +73,30 @@ const ListarPacientes = () => {
         });
       }
     }
+  };
+
+  // Abrir modal con paciente seleccionado
+  const abrirModalPaciente = async (pacienteId) => {
+    try {
+      const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/listar-pacientes/${pacienteId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setPacienteSeleccionado(data.paciente); // Asignar los datos completos del paciente
+      setModalAbierto(true);
+    } catch (error) {
+      mostrarMensaje({
+        respuesta: error.response?.data?.msg || 'Error al obtener datos del paciente',
+        tipo: false
+      });
+    }
+  };
+
+  // Cerrar modal
+  const cerrarModal = () => {
+    setModalAbierto(false);
+    setPacienteSeleccionado(null);
   };
 
   // Filtrar pacientes por búsqueda
@@ -84,11 +110,8 @@ const ListarPacientes = () => {
     );
   });
 
-
-
   return (
     <div className="min-h-full px-6 py-2 lg:px-8">
-
       {/* Logo y título */}
       <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
         {Object.keys(mensaje).length > 0 && (
@@ -107,7 +130,7 @@ const ListarPacientes = () => {
         </h2>
       </div>
 
-      {/* Barra de búsqueda y botón de agregar */}
+      {/* Barra de búsqueda */}
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-4xl flex justify-between items-center mb-6">
         <div className="relative flex-1 mr-4">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -121,13 +144,6 @@ const ListarPacientes = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <Link
-          to="/registrar-paciente"
-          className="flex items-center justify-center px-4 py-2 bg-gradient-to-r from-green-400 to-blue-600 text-white rounded-md hover:bg-green-700"
-        >
-          <FaUser className="mr-2" />
-          Nuevo Paciente
-        </Link>
       </div>
 
       {/* Tabla de pacientes */}
@@ -166,21 +182,17 @@ const ListarPacientes = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">{paciente.email}</div>
                       <div className="text-sm text-gray-500">{paciente.celular || 'Sin teléfono'}</div>
-                      <div className="text-sm text-gray-500">{paciente.direccion || 'Sin dirección'}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${paciente.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                         {paciente.status ? 'Activo' : 'Inactivo'}
                       </span>
-                      <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${paciente.confirmEmail ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                        {paciente.confirmEmail ? 'Email confirmado' : 'Email pendiente'}
-                      </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
-                        onClick={() => navigate(`/editar-paciente/${paciente._id}`)}
+                        onClick={() => abrirModalPaciente(paciente._id)} // Pasar el ID del paciente
                         className="text-green-600 hover:text-green-900 mr-4 cursor-pointer"
-                        title="Editar"
+                        title="Ver perfil"
                       >
                         <FaUser size={18} />
                       </button>
@@ -204,6 +216,16 @@ const ListarPacientes = () => {
       <div className="mt-6 text-center text-sm text-gray-500">
         Mostrando {filteredPacientes.length} de {pacientes.length} pacientes
       </div>
+
+      {/* Modal para ver perfil de paciente */}
+      {modalAbierto && (
+        <ModalPaciente
+          paciente={pacienteSeleccionado} // Pasar los datos completos del paciente
+          onClose={cerrarModal}
+          onEliminar={handleEliminarPaciente}
+          mensaje={mensaje}
+        />
+      )}
     </div>
   );
 };
