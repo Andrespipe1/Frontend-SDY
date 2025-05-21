@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import Mensaje from "../components/Alerts/Mensaje";
 import axios from "axios";
 import logo from '../assets/LogoF.png';
-import { FaHome } from 'react-icons/fa';
+import { FaHome, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
   const navigate = useNavigate();
   const [mensaje, setMensaje] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({  
     email: "",
     password: ""
@@ -20,6 +21,10 @@ const Login = () => {
       ...form,
       [e.target.name]: e.target.value
     });
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = async (e) => { 
@@ -130,17 +135,28 @@ const Login = () => {
                 </Link>
               </div>
             </div>
-            <div className="mt-2">
+            <div className="mt-2 relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 name="password"
                 id="password"
                 value={form.password}
                 onChange={handleChange}
                 autoComplete="current-password"
                 required
-                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
+                className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6 pr-10"
               />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                onClick={togglePasswordVisibility}
+              >
+                {showPassword ? (
+                  <FaEyeSlash className="h-5 w-5 text-gray-400" />
+                ) : (
+                  <FaEye className="h-5 w-5 text-gray-400" />
+                )}
+              </button>
             </div>
           </div>
 

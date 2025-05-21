@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaUtensils, FaCoffee, FaHamburger, FaIceCream, FaPlus, FaTrash, FaCalendarAlt, FaSearch } from 'react-icons/fa';
+import { FaUtensils, FaCoffee, FaHamburger, FaIceCream, FaPlus, FaTrash, FaCalendarAlt, FaSearch, FaEdit, FaTimes } from 'react-icons/fa';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import Mensaje from '../components/Alerts/Mensaje';
@@ -9,7 +9,7 @@ const FormularioComidas = () => {
     desayuno: '',
     almuerzo: '',
     cena: '',
-    snacks: ''
+    snack: ''
   });
   const [mensaje, setMensaje] = useState({});
   const [apiResponse, setApiResponse] = useState({
@@ -18,6 +18,7 @@ const FormularioComidas = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [fechaFiltro, setFechaFiltro] = useState('');
+  const [editingComida, setEditingComida] = useState(null); // Estado para controlar qué comida se está editando
   const token = localStorage.getItem('token');
   const decodedToken = jwtDecode(token);
   const pacienteId = decodedToken?.id;
@@ -75,7 +76,7 @@ const FormularioComidas = () => {
 
     try {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/comidas/registro`,
+        `${import.meta.env.VITE_BACKEND_URL}/comidas-paciente/registro`,
         { 
           tipoComida: tipoComida.charAt(0).toUpperCase() + tipoComida.slice(1),
           descripcion: comidasInput[tipoComida],
@@ -108,7 +109,7 @@ const FormularioComidas = () => {
   const eliminarComida = async (id) => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/comidas/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/eliminar-comida/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
@@ -126,6 +127,58 @@ const FormularioComidas = () => {
       });
     }
   };
+
+  // Función para iniciar la edición de una comida
+  const iniciarEdicionComida = (comida) => {
+    setEditingComida({
+      id: comida._id,
+      tipoComida: comida.tipoComida.toLowerCase(),
+      descripcion: comida.descripcion
+    });
+  };
+
+  // Función para cancelar la edición
+  const cancelarEdicion = () => {
+    setEditingComida(null);
+  };
+
+  // Función para actualizar una comida
+  const actualizarComida = async () => {
+    if (!editingComida?.descripcion) {
+      mostrarMensaje({ respuesta: 'Por favor ingresa una descripción', tipo: false });
+      return;
+    }
+
+    try {
+      const { data } = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/actualizar-comida/${editingComida.id}`,
+        { 
+          id: editingComida.id,
+          descripcion: editingComida.descripcion
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      mostrarMensaje({ respuesta: 'Comida actualizada exitosamente', tipo: true });
+      
+      // Actualizar el estado con la comida actualizada
+      setApiResponse(prev => ({
+        ...prev,
+        comidas: prev.comidas.map(comida => 
+          comida._id === editingComida.id ? data : comida
+        )
+      }));
+      
+      // Limpiar el estado de edición
+      setEditingComida(null);
+    } catch (error) {
+      mostrarMensaje({
+        respuesta: error.response?.data?.msg || 'Error al actualizar la comida',
+        tipo: false
+      });
+    }
+  };
+
   // Función para filtrar comidas por un día específico
   const comidasFiltradas = apiResponse.comidas.filter(comida => {
     if (!fechaFiltro) return true;
@@ -154,7 +207,7 @@ const FormularioComidas = () => {
       placeholder: 'Ej: Crema de calabaza, filete de merluza con espárragos...'
     },
     {
-      name: 'snacks',
+      name: 'snack',
       label: 'Snacks',
       icon: <FaIceCream className="text-pink-500" />,
       placeholder: 'Ej: Frutos secos, yogur griego con frutas...'
@@ -184,28 +237,64 @@ const FormularioComidas = () => {
                 </div>
                 <label className="text-sm font-medium text-gray-700">{comida.label}</label>
               </div>
-              <textarea
-                name={comida.name}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                rows="3"
-                value={comidasInput[comida.name]}
-                onChange={handleChange}
-                placeholder={comida.placeholder}
-              />
-              <div className="flex justify-end mt-1">
-                <button 
-                  type="button"
-                  className="text-xs flex items-center text-blue-600 hover:text-blue-800"
-                  onClick={() => handleSubmitComida(comida.name)}
-                >
-                  <FaPlus className="mr-1" size={10} />
-                  Guardar {comida.label}
-                </button>
-              </div>
+              
+              {/* Mostrar textarea normal o el de edición según el estado */}
+              {editingComida?.tipoComida === comida.name ? (
+                <div className="relative">
+                  <textarea
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    rows="3"
+                    value={editingComida.descripcion}
+                    onChange={(e) => setEditingComida({
+                      ...editingComida,
+                      descripcion: e.target.value
+                    })}
+                    placeholder={comida.placeholder}
+                  />
+                  <div className="flex justify-between mt-1">
+                    <button 
+                      type="button"
+                      className="text-xs flex items-center text-red-600 hover:text-red-800"
+                      onClick={cancelarEdicion}
+                    >
+                      <FaTimes className="mr-1" size={10} />
+                      Cancelar
+                    </button>
+                    <button 
+                      type="button"
+                      className="text-xs flex items-center text-green-600 hover:text-green-800"
+                      onClick={actualizarComida}
+                    >
+                      <FaEdit className="mr-1" size={10} />
+                      Guardar Cambios
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <textarea
+                    name={comida.name}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    rows="3"
+                    value={comidasInput[comida.name]}
+                    onChange={handleChange}
+                    placeholder={comida.placeholder}
+                  />
+                  <div className="flex justify-end mt-1">
+                    <button 
+                      type="button"
+                      className="text-xs flex items-center text-blue-600 hover:text-blue-800"
+                      onClick={() => handleSubmitComida(comida.name)}
+                    >
+                      <FaPlus className="mr-1" size={10} />
+                      Guardar {comida.label}
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ))}
         </div>
-
 
         {/* Historial de comidas con filtro simple */}
         <div className="mt-8">
@@ -274,13 +363,22 @@ const FormularioComidas = () => {
                         })}
                       </span>
                     </div>
-                    <button
-                      onClick={() => eliminarComida(comida._id)}
-                      className="text-red-500 hover:text-red-700"
-                      title="Eliminar"
-                    >
-                      <FaTrash />
-                    </button>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => iniciarEdicionComida(comida)}
+                        className="text-blue-500 hover:text-blue-700"
+                        title="Editar"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => eliminarComida(comida._id)}
+                        className="text-red-500 hover:text-red-700"
+                        title="Eliminar"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

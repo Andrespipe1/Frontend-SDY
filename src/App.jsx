@@ -16,7 +16,8 @@ import Perfil from './pages/Perfil';
 import { AuthProvider } from './context/AuthContext';
 import PerfilNutri from './pages/PerfilNutri';
 import ListarPacientes from './pages/ListarPacientes';
-import ListarFormularios from './pages/Formularios';
+import Formularios from './pages/Formularios';
+import Chat from './pages/Chat';
 
 function App() {
   return (
@@ -34,7 +35,8 @@ function App() {
           {/* Rutas protegidas para usuarios */}
           <Route path="/dashboard" element={<UserDashboardLayout />}>
             <Route path="perfil" element={<Perfil />} />
-            <Route path="registro" element={<ListarFormularios />} />
+            <Route path="registro" element={<Formularios />} />
+            <Route path="chat" element={<Chat />} />
 
             {/* Aquí puedes agregar más rutas dentro del dashboard del usuario uwu */}
           </Route>
@@ -43,6 +45,7 @@ function App() {
           <Route path="/dashboard_Nutri" element={<NutriDashboardLayout />} >
           <Route path="perfilNutri" element={<PerfilNutri />} />
           <Route path="listarPacientes" element={<ListarPacientes />} />
+          <Route path="chat" element={<Chat />} />
 
           </Route>
           {/* Página no encontrada */}
