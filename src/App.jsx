@@ -18,6 +18,7 @@ import PerfilNutri from './pages/PerfilNutri';
 import ListarPacientes from './pages/ListarPacientes';
 import Formularios from './pages/Formularios';
 import Chat from './pages/Chat';
+import BienvenidaDashboard from './components/BienvenidaDashboard'; 
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
 
           {/* Rutas protegidas para usuarios */}
           <Route path="/dashboard" element={<UserDashboardLayout />}>
+            <Route index element={<BienvenidaDashboard rol="paciente" />} />
             <Route path="perfil" element={<Perfil />} />
             <Route path="registro" element={<Formularios />} />
             <Route path="chat" element={<Chat />} />
@@ -43,6 +45,7 @@ function App() {
 
           {/* Rutas protegidas para nutricionistas (por si luego agregas más subrutas) */}
           <Route path="/dashboard_Nutri" element={<NutriDashboardLayout />} >
+          <Route index element={<BienvenidaDashboard rol="nutri" />} />
           <Route path="perfilNutri" element={<PerfilNutri />} />
           <Route path="listarPacientes" element={<ListarPacientes />} />
           <Route path="chat" element={<Chat />} />
