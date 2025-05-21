@@ -30,7 +30,7 @@ const PerfilNutri = () => {
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
-        const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/perfil`, {
+        const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/perfilNutri`, {
           headers: {
             Authorization: `Bearer ${token}`
           }
