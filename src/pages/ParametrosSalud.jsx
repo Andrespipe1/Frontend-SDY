@@ -3,7 +3,7 @@ import Mensaje from '../components/Alerts/Mensaje';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { FaCalendarAlt, FaTrash, FaSearch, FaEdit } from 'react-icons/fa';
-
+import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
 const ParametrosSalud = () => {
   const [mensaje, setMensaje] = useState({});
   const [parametros, setParametros] = useState({
@@ -18,6 +18,8 @@ const ParametrosSalud = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentEditId, setCurrentEditId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(null);
   
   const token = localStorage.getItem('token');
   const decodedToken = jwtDecode(token);
@@ -171,10 +173,20 @@ const ParametrosSalud = () => {
     }
   };
 
-  const eliminarParametros = async (id) => {
+  const openDeleteModal = (id) => {
+    setIdToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIdToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+
+  const confirmDelete = async () => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/eliminar-parametro/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/eliminar-parametro/${idToDelete}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -191,6 +203,8 @@ const ParametrosSalud = () => {
         respuesta: error.response?.data?.msg || 'Error al eliminar el registro',
         tipo: false
       });
+    } finally {
+      closeDeleteModal();
     }
   };
 
@@ -255,6 +269,13 @@ const ParametrosSalud = () => {
   }
 
   return (
+    <>
+    <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDelete}
+        message="¿Estás seguro de que deseas eliminar este parámetro?"
+      />
     <form onSubmit={handleSubmit} className="pb-4 sm:pb-8">
       {mensaje.respuesta && (
         <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
@@ -543,7 +564,8 @@ const ParametrosSalud = () => {
                               <FaEdit size={14} />
                             </button>
                             <button
-                              onClick={() => eliminarParametros(registro._id)}
+                              type='button' // Evita que dispare el evento onSubmit
+                              onClick={() => openDeleteModal(registro._id)}
                               className="text-red-600 hover:text-red-900 p-1"
                               title="Eliminar"
                             >
@@ -561,6 +583,7 @@ const ParametrosSalud = () => {
         </>
       )}
     </form>
+    </>
   );
 };
 

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Mensaje from '../components/Alerts/Mensaje';
-import { FaHome, FaUserEdit, FaTrash, FaUser, FaSearch } from 'react-icons/fa';
+import { FaHome, FaUserEdit, FaTrash, FaUser, FaSearch, FaAccessibleIcon, FaArchive,  } from 'react-icons/fa';
 import logo from '../assets/LogoF.png';
-import ModalPaciente from '../components/Modal';
-
+import ModalPaciente from '../components/Modals/Modal';
+import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
 const ListarPacientes = () => {
   const [pacientes, setPacientes] = useState([]);
   const [mensaje, setMensaje] = useState({});
@@ -12,6 +12,8 @@ const ListarPacientes = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [modalAbierto, setModalAbierto] = useState(false);
   const [pacienteSeleccionado, setPacienteSeleccionado] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState(null);
   const token = localStorage.getItem('token');
 
   // Función para mostrar mensaje con temporizador
@@ -29,7 +31,7 @@ const ListarPacientes = () => {
             Authorization: `Bearer ${token}`
           }
         });
-        
+
         if (data.success && Array.isArray(data.pacientes)) {
           setPacientes(data.pacientes);
         } else {
@@ -37,11 +39,11 @@ const ListarPacientes = () => {
         }
       } catch (error) {
         console.error('Error al obtener pacientes:', error);
-        mostrarMensaje({ 
-          respuesta: error.response?.data?.msg || 
-                   error.message || 
-                   'Error al obtener pacientes', 
-          tipo: false 
+        mostrarMensaje({
+          respuesta: error.response?.data?.msg ||
+            error.message ||
+            'Error al obtener pacientes',
+          tipo: false
         });
         setPacientes([]);
       } finally {
@@ -51,27 +53,32 @@ const ListarPacientes = () => {
 
     obtenerPacientes();
   }, [token]);
+  const openDeleteModal = (id) => {
+    setIdToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
 
+  const closeDeleteModal = () => {
+    setIdToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
   // Eliminar paciente
-  const handleEliminarPaciente = async (id) => {
-    if (window.confirm('¿Estás seguro de eliminar este paciente?')) {
-      try {
-        await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/eliminar-paciente/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        mostrarMensaje({ respuesta: 'Paciente eliminado correctamente', tipo: true });
-        // Cerrar modal si está abierto
-        setModalAbierto(false);
-        // Actualizar lista después de eliminar
-        setPacientes(pacientes.filter(paciente => paciente._id !== id));
-      } catch (error) {
-        mostrarMensaje({ 
-          respuesta: error.response?.data?.msg || 'Error al eliminar paciente', 
-          tipo: false 
-        });
-      }
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/eliminar-paciente/${idToDelete}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      mostrarMensaje({ respuesta: 'Paciente eliminado correctamente', tipo: true });
+      setPacientes(pacientes.filter((paciente) => paciente._id !== idToDelete));
+    } catch (error) {
+      mostrarMensaje({
+        respuesta: error.response?.data?.msg || 'Error al eliminar paciente',
+        tipo: false,
+      });
+    } finally {
+      closeDeleteModal();
     }
   };
 
@@ -111,6 +118,13 @@ const ListarPacientes = () => {
   });
 
   return (
+    <>
+      <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDelete}
+        message="¿Estás seguro de que deseas eliminar este paciente?"
+      />
     <div className="min-h-full px-6 py-2 lg:px-8">
       {/* Logo y título */}
       <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
@@ -197,11 +211,11 @@ const ListarPacientes = () => {
                         <FaUser size={18} />
                       </button>
                       <button
-                        onClick={() => handleEliminarPaciente(paciente._id)}
+                        onClick={() => openDeleteModal(paciente._id)}
                         className="text-red-600 hover:text-red-900 cursor-pointer"
                         title="Eliminar"
                       >
-                        <FaTrash size={18} />
+                        <FaArchive size={18} />
                       </button>
                     </td>
                   </tr>
@@ -227,6 +241,7 @@ const ListarPacientes = () => {
         />
       )}
     </div>
+    </>
   );
 };
 

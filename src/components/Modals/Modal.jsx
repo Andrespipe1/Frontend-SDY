@@ -1,19 +1,19 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
-import Mensaje from '../components/Alerts/Mensaje';
+import Mensaje from '../Alerts/Mensaje';
 
-const ModalPaciente = ({ 
-  paciente, 
-  onClose, 
+const ModalPaciente = ({
+  paciente,
+  onClose,
   onEliminar,
-  mensaje 
+  mensaje
 }) => {
   if (!paciente) return null;
-  
+
 
   return (
     <div
-      className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
@@ -51,9 +51,8 @@ const ModalPaciente = ({
                     {paciente.nombre} {paciente.apellido}
                   </h4>
                   <p className="text-gray-600">{paciente.edad} años</p>
-                  <span className={`inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full ${
-                    paciente.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                  }`}>
+                  <span className={`inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full ${paciente.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }`}>
                     {paciente.status ? 'Activo' : 'Inactivo'}
                   </span>
                 </div>
@@ -63,9 +62,8 @@ const ModalPaciente = ({
                 <div>
                   <h5 className="text-sm font-medium text-gray-500">Email</h5>
                   <p className="mt-1 text-sm text-gray-900">{paciente.email}</p>
-                  <span className={`inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full ${
-                    paciente.confirmEmail ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                  }`}>
+                  <span className={`inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full ${paciente.confirmEmail ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                    }`}>
                     {paciente.confirmEmail ? 'Email confirmado' : 'Email pendiente'}
                   </span>
                 </div>
@@ -86,13 +84,13 @@ const ModalPaciente = ({
               <div>
                 <h5 className="text-sm font-medium text-gray-500">Fecha de Registro</h5>
                 <p className="mt-1 text-sm text-gray-900">
-                    {new Date(paciente.createdAt).toLocaleDateString('es-ES', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                    })}
-                    </p>
-                        </div>
+                  {new Date(paciente.createdAt).toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </p>
+              </div>
 
               {paciente.parametros && paciente.parametros.length > 0 && (
                 <div>
@@ -108,12 +106,6 @@ const ModalPaciente = ({
 
           {/* Acciones */}
           <div className="flex justify-end gap-4 border-t pt-4">
-            <button
-              onClick={() => onEliminar(paciente._id)}
-              className="px-5 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
-            >
-              Eliminar
-            </button>
             <button
               onClick={onClose} // Puedes cambiar esto por una función de historial
               className="px-5 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"

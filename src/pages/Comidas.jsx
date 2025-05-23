@@ -3,7 +3,7 @@ import { FaUtensils, FaCoffee, FaHamburger, FaIceCream, FaPlus, FaTrash, FaCalen
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import Mensaje from '../components/Alerts/Mensaje';
-
+import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
 const FormularioComidas = () => {
   const [comidasInput, setComidasInput] = useState({
     desayuno: '',
@@ -19,6 +19,8 @@ const FormularioComidas = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [fechaFiltro, setFechaFiltro] = useState('');
   const [editingComida, setEditingComida] = useState(null); // Estado para controlar qué comida se está editando
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false); // Estado para controlar la visibilidad del modal de eliminación
+  const [idToDelete, setIdToDelete] = useState(null); // ID de la comida a eliminar
   const token = localStorage.getItem('token');
   const decodedToken = jwtDecode(token);
   const pacienteId = decodedToken?.id;
@@ -69,62 +71,77 @@ const FormularioComidas = () => {
   };
 
   const handleSubmitComida = async (tipoComida) => {
-    if (!comidasInput[tipoComida]) {
-      mostrarMensaje({ respuesta: 'Por favor ingresa una descripción', tipo: false });
+    const descripcion = comidasInput[tipoComida];
+  
+    // Validar longitud mínima y máxima
+    if (!descripcion || descripcion.length < 10 || descripcion.length > 200) {
+      mostrarMensaje({
+        respuesta: 'La descripción debe tener entre 10 y 200 caracteres.',
+        tipo: false,
+      });
       return;
     }
-
+  
     try {
       const { data } = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/comidas-paciente/registro`,
-        { 
+        {
           tipoComida: tipoComida.charAt(0).toUpperCase() + tipoComida.slice(1),
-          descripcion: comidasInput[tipoComida],
-          paciente: pacienteId
+          descripcion,
+          paciente: pacienteId,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
+  
       mostrarMensaje({ respuesta: 'Comida registrada exitosamente', tipo: true });
-      
-      // Actualizar el estado con la nueva comida
-      setApiResponse(prev => ({
+  
+      // Actualizar el estado con la nueva comida - CORRECCIÓN AQUÍ
+      setApiResponse((prev) => ({
         ...prev,
-        comidas: [data, ...prev.comidas]
+        comidas: [data.comida || data, ...prev.comidas], // Asegurarse de obtener la comida correcta
       }));
-      
+  
       // Limpiar el input
       setComidasInput({
         ...comidasInput,
-        [tipoComida]: ''
+        [tipoComida]: '',
       });
     } catch (error) {
       mostrarMensaje({
         respuesta: error.response?.data?.msg || 'Error al registrar la comida',
-        tipo: false
+        tipo: false,
       });
     }
   };
 
-  const eliminarComida = async (id) => {
+  const openDeleteModal = (id) => {
+    setIdToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIdToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+  const confirmDelete = async () => {
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/eliminar-comida/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/eliminar-comida/${idToDelete}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       mostrarMensaje({ respuesta: 'Comida eliminada exitosamente', tipo: true });
-      
-      // Actualizar el estado eliminando la comida
-      setApiResponse(prev => ({
+      setApiResponse((prev) => ({
         ...prev,
-        comidas: prev.comidas.filter(comida => comida._id !== id)
+        comidas: prev.comidas.filter((comida) => comida._id !== idToDelete),
       }));
     } catch (error) {
       mostrarMensaje({
         respuesta: error.response?.data?.msg || 'Error al eliminar la comida',
-        tipo: false
+        tipo: false,
       });
+    } finally {
+      closeDeleteModal();
     }
   };
 
@@ -186,7 +203,12 @@ const FormularioComidas = () => {
     const fechaComida = new Date(comida.createdAt).toISOString().split('T')[0];
     return fechaComida === fechaFiltro;
   });
-
+  const permitirSoloTexto = (e) => {
+    const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/; // Permite letras, espacios y caracteres acentuados
+    if (!regex.test(e.key)) {
+      e.preventDefault(); // Evita que se escriban caracteres no permitidos
+    }
+  };
   const comidasConfig = [
     {
       name: 'desayuno',
@@ -215,6 +237,13 @@ const FormularioComidas = () => {
   ];
 
   return (
+    <>
+    <ConfirmDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={closeDeleteModal}
+        onConfirm={confirmDelete}
+        message="¿Estás seguro de que deseas eliminar esta comida?"
+      />
     <div className="bg-white rounded-xl shadow-md overflow-hidden">
       <div className="p-6">
         {mensaje.respuesta && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
@@ -249,6 +278,7 @@ const FormularioComidas = () => {
                       ...editingComida,
                       descripcion: e.target.value
                     })}
+                    onKeyPress={permitirSoloTexto}
                     placeholder={comida.placeholder}
                   />
                   <div className="flex justify-between mt-1">
@@ -278,6 +308,7 @@ const FormularioComidas = () => {
                     rows="3"
                     value={comidasInput[comida.name]}
                     onChange={handleChange}
+                    onKeyPress={permitirSoloTexto}
                     placeholder={comida.placeholder}
                   />
                   <div className="flex justify-end mt-1">
@@ -354,12 +385,12 @@ const FormularioComidas = () => {
                       <span className="font-medium text-blue-600">{comida.tipoComida}</span>
                       <p className="text-gray-700 mt-1">{comida.descripcion}</p>
                       <span className="text-xs text-gray-500">
-                        {new Date(comida.createdAt).toLocaleDateString('es-ES', {
+                        {new Date(comida.createdAt || new Date()).toLocaleDateString('es-ES', {
                           day: '2-digit',
                           month: 'short',
                           year: 'numeric',
                           hour: '2-digit',
-                          minute: '2-digit'
+                          minute: '2-digit',
                         })}
                       </span>
                     </div>
@@ -372,7 +403,7 @@ const FormularioComidas = () => {
                         <FaEdit />
                       </button>
                       <button
-                        onClick={() => eliminarComida(comida._id)}
+                        onClick={() => openDeleteModal(comida._id)}
                         className="text-red-500 hover:text-red-700"
                         title="Eliminar"
                       >
@@ -387,6 +418,7 @@ const FormularioComidas = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
