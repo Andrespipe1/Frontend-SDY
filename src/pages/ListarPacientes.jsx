@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Mensaje from '../components/Alerts/Mensaje';
-import { FaHome, FaUserEdit, FaTrash, FaUser, FaSearch, FaAccessibleIcon, FaArchive,  } from 'react-icons/fa';
+import { FaUserEdit, FaTrash, FaUser, FaSearch } from 'react-icons/fa';
 import logo from '../assets/LogoF.png';
 import ModalPaciente from '../components/Modals/Modal';
 import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
@@ -215,7 +215,7 @@ const ListarPacientes = () => {
                         className="text-red-600 hover:text-red-900 cursor-pointer"
                         title="Eliminar"
                       >
-                        <FaArchive size={18} />
+                        <FaUserEdit size={18} />
                       </button>
                     </td>
                   </tr>
@@ -236,7 +236,6 @@ const ListarPacientes = () => {
         <ModalPaciente
           paciente={pacienteSeleccionado} // Pasar los datos completos del paciente
           onClose={cerrarModal}
-          onEliminar={handleEliminarPaciente}
           mensaje={mensaje}
         />
       )}

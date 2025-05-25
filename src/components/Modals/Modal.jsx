@@ -1,19 +1,26 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import Mensaje from '../Alerts/Mensaje';
 
-const ModalPaciente = ({
-  paciente,
-  onClose,
-  onEliminar,
-  mensaje
+const ModalPaciente = ({ 
+  paciente, 
+  onClose, 
+  mensaje 
 }) => {
+  const navigate = useNavigate();
+
   if (!paciente) return null;
 
+  const handleVerHistorial = () => {
+    onClose(); // Cierra el modal primero
+    // Navega a la ruta dentro del dashboard del nutricionista
+    navigate(`/dashboard_Nutri/historial/${paciente._id}`);
+  };
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
@@ -51,8 +58,9 @@ const ModalPaciente = ({
                     {paciente.nombre} {paciente.apellido}
                   </h4>
                   <p className="text-gray-600">{paciente.edad} años</p>
-                  <span className={`inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full ${paciente.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
+                  <span className={`inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full ${
+                    paciente.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  }`}>
                     {paciente.status ? 'Activo' : 'Inactivo'}
                   </span>
                 </div>
@@ -62,8 +70,9 @@ const ModalPaciente = ({
                 <div>
                   <h5 className="text-sm font-medium text-gray-500">Email</h5>
                   <p className="mt-1 text-sm text-gray-900">{paciente.email}</p>
-                  <span className={`inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full ${paciente.confirmEmail ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                    }`}>
+                  <span className={`inline-block mt-1 px-2 py-1 text-xs font-semibold rounded-full ${
+                    paciente.confirmEmail ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                  }`}>
                     {paciente.confirmEmail ? 'Email confirmado' : 'Email pendiente'}
                   </span>
                 </div>
@@ -104,14 +113,14 @@ const ModalPaciente = ({
             </div>
           </div>
 
-          {/* Acciones */}
-          <div className="flex justify-end gap-4 border-t pt-4">
-            <button
-              onClick={onClose} // Puedes cambiar esto por una función de historial
-              className="px-5 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition"
-            >
-              Ver historial
-            </button>
+        {/* Acciones */}
+        <div className="flex justify-end gap-4 border-t pt-4">
+          <button
+            onClick={handleVerHistorial}
+            className="px-5 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+          >
+            Ver historial
+          </button>
           </div>
         </div>
       </div>
