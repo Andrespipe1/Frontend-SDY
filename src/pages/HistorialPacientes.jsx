@@ -32,7 +32,7 @@ const HistorialPaciente = () => {
           `${import.meta.env.VITE_BACKEND_URL}/listar-pacientes/${pacienteId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
-            timeout: 2000
+            timeout: 1000
           }
         );
 
@@ -51,7 +51,7 @@ const HistorialPaciente = () => {
 
         const { data: historialData } = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` },
-          timeout: 2000
+          timeout: 1000
         });
 
         console.log('Respuesta del historial:', historialData); // Debug

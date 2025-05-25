@@ -28,7 +28,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    const newSocket = io("http://localhost:3000");
+    const newSocket = io("https://backend-sdy.onrender.com");
     setSocket(newSocket);
     newSocket.on("enviar-mensaje-front-back", (payload) => {
       setResponses((prev) => [...prev, payload]);
