@@ -4,6 +4,8 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { FaCalendarAlt, FaTrash, FaSearch, FaEdit } from 'react-icons/fa';
 import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
+import { motion } from 'framer-motion';
+
 const ParametrosSalud = () => {
   const [mensaje, setMensaje] = useState({});
   const [parametros, setParametros] = useState({
@@ -282,7 +284,26 @@ const ParametrosSalud = () => {
       )}
       
       {isLoading ? (
-        <div className="p-4 sm:p-6 text-center">Cargando...</div>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center"
+        >
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+            className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"
+          />
+          <motion.p 
+            initial={{ y: 10 }}
+            animate={{ y: 0 }}
+            className="mt-4 text-lg font-semibold text-gray-700"
+          >
+            Cargando tus parámetros de salud...
+          </motion.p>
+        </motion.div>
+        </div>
       ) : (
         <>
           {/* Contenedor principal */}

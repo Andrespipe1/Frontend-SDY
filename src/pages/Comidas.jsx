@@ -4,6 +4,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import Mensaje from '../components/Alerts/Mensaje';
 import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
+import { motion } from 'framer-motion';
 const FormularioComidas = () => {
   const [comidasInput, setComidasInput] = useState({
     desayuno: '',
@@ -33,17 +34,20 @@ const FormularioComidas = () => {
   // Obtener datos del paciente y sus comidas
   useEffect(() => {
     const obtenerDatos = async () => {
-      if (!pacienteId) return;
-      
+      if (!pacienteId) {
+        setIsLoading(false); // <-- Asegúrate de apagar el loading
+        return;
+      }
+  
       try {
         const { data } = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/paciente/comidas/${pacienteId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        
+  
         setApiResponse({
           paciente: data.paciente,
-          comidas: data.comidas || [] // Asegurar que siempre sea un array
+          comidas: data.comidas || []
         });
       } catch (error) {
         console.error('Error obteniendo datos:', error);
@@ -59,9 +63,10 @@ const FormularioComidas = () => {
         setIsLoading(false);
       }
     };
-    
+  
     obtenerDatos();
   }, [token, pacienteId]);
+  
 
   const handleChange = (e) => {
     setComidasInput({
@@ -363,7 +368,26 @@ const FormularioComidas = () => {
           </div>
           
           {isLoading ? (
-            <div className="text-center py-4">Cargando...</div>
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center"
+            >
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"
+              />
+              <motion.p 
+                initial={{ y: 10 }}
+                animate={{ y: 0 }}
+                className="mt-4 text-lg font-semibold text-gray-700"
+              >
+                Cargando tus parámetros de salud...
+              </motion.p>
+            </motion.div>
+            </div>
           ) : comidasFiltradas.length === 0 ? (
             <div className="text-center py-4 text-gray-500">
               {apiResponse.comidas.length === 0 
