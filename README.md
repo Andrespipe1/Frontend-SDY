@@ -1,12 +1,76 @@
-# React + Vite
+# 🩺 SALUDIFY - Sistema de monitoreo de salud
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📝 Descripción
+Sistema para nutricionistas enfocado a monitorear la salud de pacientes y dar recomendaciones mediante APIs externas
+Desarrollado con React, Tailwind CSS y Vite.
 
-Currently, two official plugins are available:
+## 👨‍💻 Autores
+* **Andrés Felipe Tufiño Muñoz**
+* **Wilmer David Vargas Nilve**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠️ Tecnologías Utilizadas
+- React 19.0.0
+- Tailwind CSS 3.4.17
+- Vite 4.0.0
+- Chart.js 4.4.7
+- Formik 2.4.6
+- React Router DOM 7.1.1
+- Axios 1.7.9
 
-## Expanding the ESLint configuration
+## 📁 Estructura del Proyecto
+```
+src/
+├── components/     # Componentes reutilizables
+├── context/       # Contexto de autenticación
+├── layout/        # Layouts principales
+├── pages/         # Páginas de la aplicación
+├── routes/        # Configuración de rutas
+└── services/      # Servicios de API
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ⭐ Características
+- Autenticación y autorización
+- Dashboard con estadísticas
+- Gestión de vendedores
+- Control de inventario
+- Manejo de pedidos
+- Administración de clientes
+- Generación de proformas en PDF
+- Visualización de datos con gráficos
+
+## 📋 Requisitos
+- Node.js >= 16
+- npm o yarn
+- Variables de entorno configuradas:
+  - VITE_URL_BACKEND_API
+  - VITE_URL_BACKEND
+
+## 🚀 Instalación
+
+1. Clonar el repositorio
+```bash
+git clone [URL_DEL_REPOSITORIO]
+```
+
+2. Instalar dependencias
+```bash
+npm install
+```
+
+3. Configurar variables de entorno
+```bash
+cp .env.example .env
+```
+
+4. Iniciar en desarrollo
+```bash
+npm run dev
+```
+
+## ⚡ Scripts Disponibles
+- `npm run dev`: Inicia el servidor de desarrollo
+- `npm run build`: Construye la aplicación para producción
+- `npm run preview`: Vista previa de la versión de producción
+
+## 🌐 Despliegue
+La aplicación está configurada para despliegue con redirecciones para SPA en el archivo `public/_redirects`.
