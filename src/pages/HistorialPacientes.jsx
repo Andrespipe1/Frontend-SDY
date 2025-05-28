@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaCalendarAlt, FaSearch, FaClipboardList } from 'react-icons/fa';
 import axios from 'axios';
 import Mensaje from '../components/Alerts/Mensaje';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaCalendarAlt, FaSearch } from 'react-icons/fa';
 
 const HistorialPaciente = () => {
   const { pacienteId } = useParams();
@@ -14,6 +13,7 @@ const HistorialPaciente = () => {
   const [activeTab, setActiveTab] = useState('parametros');
   const [fechaFiltro, setFechaFiltro] = useState('');
   const [pacienteInfo, setPacienteInfo] = useState(null);
+  const [recomendaciones, setRecomendaciones] = useState([]);
 
   const token = localStorage.getItem('token');
 
@@ -36,8 +36,6 @@ const HistorialPaciente = () => {
           }
         );
 
-        console.log('Respuesta del paciente:', pacienteData); // Debug
-        
         if (!pacienteData?.paciente) {
           throw new Error('Estructura de respuesta inesperada');
         }
@@ -45,20 +43,29 @@ const HistorialPaciente = () => {
         setPacienteInfo(pacienteData.paciente);
 
         // 2. Obtener historial según la pestaña activa
-        const endpoint = activeTab === 'parametros'
-          ? `${import.meta.env.VITE_BACKEND_URL}/paciente/parametro/${pacienteId}`
-          : `${import.meta.env.VITE_BACKEND_URL}/paciente/comidas/${pacienteId}`;
+        let endpoint;
+        if (activeTab === 'parametros') {
+          endpoint = `${import.meta.env.VITE_BACKEND_URL}/paciente/parametro/${pacienteId}`;
+        } else if (activeTab === 'comidas') {
+          endpoint = `${import.meta.env.VITE_BACKEND_URL}/paciente/comidas/${pacienteId}`;
+        } else if (activeTab === 'recomendaciones') {
+          endpoint = `${import.meta.env.VITE_BACKEND_URL}/obtener-recomendaciones/${pacienteId}`;
+        }
 
         const { data: historialData } = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` },
           timeout: 1000
         });
 
-        console.log('Respuesta del historial:', historialData); // Debug
-
-        let datos = activeTab === 'parametros'
-          ? historialData?.parametros || []
-          : historialData?.comidas || [];
+        let datos = [];
+        if (activeTab === 'parametros') {
+          datos = historialData?.parametros || [];
+        } else if (activeTab === 'comidas') {
+          datos = historialData?.comidas || [];
+        } else if (activeTab === 'recomendaciones') {
+          datos = historialData?.recomendaciones || [];
+          setRecomendaciones(datos);
+        }
 
         // Aplicar filtro por fecha
         if (fechaFiltro) {
@@ -119,6 +126,24 @@ const HistorialPaciente = () => {
     return { valor: '', clasificacion: '', colorClass: '' };
   };
 
+  // Función para formatear el contenido de las recomendaciones
+  const formatearRecomendacion = (contenido, tipo) => {
+    try {
+      if (tipo === 'comidas') {
+        const comidasObj = JSON.parse(contenido);
+        return Object.entries(comidasObj).map(([tipoComida, detalle]) => (
+          <div key={tipoComida} className="mb-2">
+            <strong className="capitalize">{tipoComida}:</strong>
+            <p className="whitespace-pre-line">{detalle}</p>
+          </div>
+        ));
+      }
+      return <p className="whitespace-pre-line">{contenido}</p>;
+    } catch (e) {
+      return <p className="whitespace-pre-line">{contenido}</p>;
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       {/* Botón de regreso */}
@@ -168,7 +193,7 @@ const HistorialPaciente = () => {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Parámetros de Salud
+                Parámetros
               </button>
               <button
                 onClick={() => setActiveTab('comidas')}
@@ -178,7 +203,17 @@ const HistorialPaciente = () => {
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
-                Registro de Comidas
+                Comidas
+              </button>
+              <button
+                onClick={() => setActiveTab('recomendaciones')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'recomendaciones'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Recomendaciones
               </button>
             </nav>
           </div>
@@ -267,7 +302,7 @@ const HistorialPaciente = () => {
                 </div>
               )}
             </div>
-          ) : (
+          ) : activeTab === 'comidas' ? (
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Historial de Comidas</h2>
               
@@ -293,6 +328,49 @@ const HistorialPaciente = () => {
                             })}
                           </span>
                         </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <FaClipboardList className="mr-2 text-blue-500" />
+                Historial de Recomendaciones
+              </h2>
+              
+              {historial.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  No hay recomendaciones registradas para este paciente
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {historial.map((recomendacion) => (
+                    <div key={recomendacion._id} className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                            recomendacion.tipo === 'parametros' 
+                              ? 'bg-blue-100 text-blue-800' 
+                              : 'bg-green-100 text-green-800'
+                          }`}>
+                            {recomendacion.tipo === 'parametros' ? 'Parámetros' : 'Comidas'}
+                          </span>
+                          <span className="ml-3 text-sm text-gray-500">
+                            {new Date(recomendacion.createdAt).toLocaleDateString('es-ES', {
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        {formatearRecomendacion(recomendacion.contenido, recomendacion.tipo)}
                       </div>
                     </div>
                   ))}

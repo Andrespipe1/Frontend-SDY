@@ -20,7 +20,6 @@ const NutriDashboardLayout = () => {
     { to: 'perfilNutri', icon: <UserIcon className="w-5 h-5" />, text: 'Perfil' },
     { to: 'listarPacientes', icon: <FileTextIcon className="w-5 h-5" />, text: 'Pacientes' },
     { to: 'chat', icon: <MessageCircleIcon className="w-5 h-5" />, text: 'Chat' },
-    { to: 'recomendaciones', icon: <HeartPulseIcon className="w-5 h-5" />, text: 'Recomendaciones' },
   ]
 
   return (
