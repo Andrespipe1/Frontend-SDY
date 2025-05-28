@@ -34,7 +34,11 @@ const ParametrosSalud = () => {
 
   const historialFiltrado = historial.filter((item) => {
     if (!fechaFiltro) return true;
-    return item.createdAt.startsWith(fechaFiltro);
+    
+    // Convertir ambas fechas a formato YYYY-MM-DD para comparación exacta
+    const fechaRegistro = new Date(item.createdAt);
+    const fechaRegistroStr = fechaRegistro.toLocaleDateString('en-CA');
+    return fechaRegistroStr === fechaFiltro;
   });
 
   // Get the latest record for display
@@ -526,6 +530,7 @@ const ParametrosSalud = () => {
                         onClick={() => setFechaFiltro('')}
                         className="px-3 py-1 sm:px-4 sm:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center text-xs sm:text-sm"
                         title="Limpiar filtro"
+                        type='button' // Evita que dispare el evento onSubmit
                       >
                         <FaSearch className="mr-1" />
                         {fechaFiltro ? 'Limpiar' : 'Todo'}
@@ -536,11 +541,14 @@ const ParametrosSalud = () => {
               </div>
             </div>
             
-            {historial.length === 0 ? (
+            {historialFiltrado.length === 0 ? (
               <div className="text-center py-6 text-gray-500 text-sm sm:text-base">
-                No hay registros históricos de parámetros
+                {historial.length === 0 
+                  ? 'No hay registros históricos de parámetros' 
+                  : `No hay registros para la fecha ${fechaFiltro.split('-').reverse().join('/')}`}
               </div>
             ) : (
+
               <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">

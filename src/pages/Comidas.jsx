@@ -88,7 +88,7 @@ const FormularioComidas = () => {
     }
   
     try {
-      const { data } = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/comidas-paciente/registro`,
         {
           tipoComida: tipoComida.charAt(0).toUpperCase() + tipoComida.slice(1),
@@ -98,13 +98,10 @@ const FormularioComidas = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
   
-      mostrarMensaje({ respuesta: 'Comida registrada exitosamente', tipo: true });
-  
-      // Actualizar el estado con la nueva comida - CORRECCIÓN AQUÍ
-      setApiResponse((prev) => ({
-        ...prev,
-        comidas: [data.comida || data, ...prev.comidas], // Asegurarse de obtener la comida correcta
-      }));
+      mostrarMensaje({ 
+        respuesta: 'Comida registrada exitosamente. Actualiza el historial para ver los cambios.', 
+        tipo: true 
+      });
   
       // Limpiar el input
       setComidasInput({
@@ -170,9 +167,9 @@ const FormularioComidas = () => {
       mostrarMensaje({ respuesta: 'Por favor ingresa una descripción', tipo: false });
       return;
     }
-
+  
     try {
-      const { data } = await axios.put(
+      await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/actualizar-comida/${editingComida.id}`,
         { 
           id: editingComida.id,
@@ -180,16 +177,11 @@ const FormularioComidas = () => {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      mostrarMensaje({ respuesta: 'Comida actualizada exitosamente', tipo: true });
-      
-      // Actualizar el estado con la comida actualizada
-      setApiResponse(prev => ({
-        ...prev,
-        comidas: prev.comidas.map(comida => 
-          comida._id === editingComida.id ? data : comida
-        )
-      }));
+  
+      mostrarMensaje({ 
+        respuesta: 'Comida actualizada exitosamente. Actualiza el historial para ver los cambios.', 
+        tipo: true 
+      });
       
       // Limpiar el estado de edición
       setEditingComida(null);
@@ -201,13 +193,41 @@ const FormularioComidas = () => {
     }
   };
 
-  // Función para filtrar comidas por un día específico
-  const comidasFiltradas = apiResponse.comidas.filter(comida => {
-    if (!fechaFiltro) return true;
-    
-    const fechaComida = new Date(comida.createdAt).toISOString().split('T')[0];
-    return fechaComida === fechaFiltro;
-  });
+
+// Función para filtrar comidas por un día específico
+const comidasFiltradas = apiResponse.comidas.filter(comida => {
+  if (!fechaFiltro) return true;
+  
+  // Crear fecha de la comida en formato YYYY-MM-DD sin considerar la hora
+  const fechaComida = new Date(comida.createdAt);
+  const fechaComidaStr = fechaComida.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
+  
+  return fechaComidaStr === fechaFiltro;
+});
+
+  const recargarHistorial = async () => {
+    setIsLoading(true);
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/paciente/comidas/${pacienteId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setApiResponse({
+        paciente: data.paciente,
+        comidas: data.comidas || []
+      });
+      mostrarMensaje({ respuesta: 'Historial recargado', tipo: true });
+    } catch (error) {
+      console.error('Error recargando datos:', error);
+      mostrarMensaje({
+        respuesta: error.response?.data?.msg || 'Error al recargar datos',
+        tipo: false
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const permitirSoloTexto = (e) => {
     const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*$/; // Permite letras, espacios y caracteres acentuados
     if (!regex.test(e.key)) {
@@ -362,6 +382,28 @@ const FormularioComidas = () => {
                     <FaSearch className="mr-1" />
                     {fechaFiltro ? 'Limpiar' : 'Ver todo'}
                   </button>
+                  {/* Botón de recarga agregado aquí */}
+                  <button
+                    onClick={() => recargarHistorial()} // O puedes implementar una función de recarga más específica
+                    className="px-4 py-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 flex items-center"
+                    title="Recargar historial"
+                  >
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-4 w-4 mr-1" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor"
+                    >
+                      <path 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round" 
+                        strokeWidth={2} 
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
+                      />
+                    </svg>
+                    Recargar
+                  </button>
                 </div>
               </div>
             </div>
@@ -384,7 +426,7 @@ const FormularioComidas = () => {
                 animate={{ y: 0 }}
                 className="mt-4 text-lg font-semibold text-gray-700"
               >
-                Cargando tus parámetros de salud...
+                Cargando tus comidas...
               </motion.p>
             </motion.div>
             </div>
@@ -393,14 +435,14 @@ const FormularioComidas = () => {
               {apiResponse.comidas.length === 0 
                 ? 'No hay comidas registradas' 
                 : fechaFiltro
-                  ? `No hay comidas registradas el ${new Date(fechaFiltro).toLocaleDateString('es-ES')}`
+                  ? `No hay comidas registradas el ${fechaFiltro.split('-').reverse().join('/')}`
                   : 'No hay comidas registradas'}
             </div>
           ) : (
             <div className="space-y-3">
               <div className="text-sm text-gray-500 mb-2">
                 Mostrando {comidasFiltradas.length} comida(s) 
-                {fechaFiltro && ` del ${new Date(fechaFiltro).toLocaleDateString('es-ES')}`}
+                
               </div>
               {comidasFiltradas.map((comida) => (
                 <div key={comida._id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">

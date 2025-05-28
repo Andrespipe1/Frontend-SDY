@@ -64,7 +64,7 @@ const Formularios = () => {
 
         {/* Contenido del formulario */}
         <div className="mb-6 sm:mb-8">
-          {activeTab === 'salud' ? <ParametrosSalud /> : <FormularioComidas />}
+          {activeTab === 'salud' ? <ParametrosSalud /> : <FormularioComidas key="comidas" />}
         </div>
       </div>
     </div>

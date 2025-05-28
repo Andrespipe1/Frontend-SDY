@@ -9,12 +9,14 @@ import {
   HeartPulseIcon,
   MenuIcon,
   XIcon,
+  Home,
 } from 'lucide-react'
 
 const UserDashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const links = [
+    {to: '/dashboard', icon: <Home className="w-5 h-5" />, text: 'Inicio'},
     { to: 'perfil', icon: <UserIcon className="w-5 h-5" />, text: 'Perfil' },
     { to: 'registro', icon: <FileTextIcon className="w-5 h-5" />, text: 'Registro' },
     { to: 'chat', icon: <MessageCircleIcon className="w-5 h-5" />, text: 'Chat' },
@@ -82,6 +84,7 @@ const UserDashboardLayout = () => {
             <NavLink
               key={to}
               to={to}
+              end={to === '/dashboard'} // Agregar 'end' solo para el enlace "Inicio"
               className={({ isActive }) =>
                 `flex items-center gap-2 px-4 py-2 rounded-md ${
                   isActive
