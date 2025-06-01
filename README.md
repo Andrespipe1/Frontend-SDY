@@ -9,13 +9,13 @@ Desarrollado con React, Tailwind CSS y Vite.
 * **Wilmer David Vargas Nilve**
 
 ## 🛠️ Tecnologías Utilizadas
-- React 19.0.0
-- Tailwind CSS 3.4.17
-- Vite 4.0.0
-- Chart.js 4.4.7
-- Formik 2.4.6
-- React Router DOM 7.1.1
-- Axios 1.7.9
+- React
+- Tailwind CSS 
+- Vite
+- Chart.
+- Framer-motion
+- React Router DOM 
+- Axios 
 
 ## 📁 Estructura del Proyecto
 ```
@@ -31,12 +31,10 @@ src/
 ## ⭐ Características
 - Autenticación y autorización
 - Dashboard con estadísticas
-- Gestión de vendedores
-- Control de inventario
-- Manejo de pedidos
-- Administración de clientes
-- Generación de proformas en PDF
-- Visualización de datos con gráficos
+- Gestión de pacientes
+- Recomendaciones generadas por IA
+- Registro de parametros de salud
+- Chat en tiempo real
 
 ## 📋 Requisitos
 - Node.js >= 16
