@@ -10,6 +10,7 @@ import {
   MenuIcon,
   XIcon,
   Home,
+  ClockIcon
 } from 'lucide-react'
 
 const UserDashboardLayout = () => {
@@ -21,6 +22,8 @@ const UserDashboardLayout = () => {
     { to: 'registro', icon: <FileTextIcon className="w-5 h-5" />, text: 'Registro' },
     { to: 'chat', icon: <MessageCircleIcon className="w-5 h-5" />, text: 'Chat' },
     { to: 'recomendaciones', icon: <HeartPulseIcon className="w-5 h-5" />, text: 'Recomendaciones' },
+    { to: 'citas', icon: <ClockIcon className="w-5 h-5" />, text: 'Citas' },
+
   ]
 
   return (

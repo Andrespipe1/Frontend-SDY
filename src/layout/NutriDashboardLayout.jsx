@@ -6,10 +6,10 @@ import {
   UserIcon,
   FileTextIcon,
   MessageCircleIcon,
-  HeartPulseIcon,
   MenuIcon,
   XIcon,
   Home,
+  ClockIcon
 } from 'lucide-react'
 
 const NutriDashboardLayout = () => {
@@ -20,6 +20,9 @@ const NutriDashboardLayout = () => {
     { to: 'perfilNutri', icon: <UserIcon className="w-5 h-5" />, text: 'Perfil' },
     { to: 'listarPacientes', icon: <FileTextIcon className="w-5 h-5" />, text: 'Pacientes' },
     { to: 'chat', icon: <MessageCircleIcon className="w-5 h-5" />, text: 'Chat' },
+    { to: 'citas', icon: <ClockIcon className="w-5 h-5" />, text: 'Citas' },
+
+
   ]
 
   return (

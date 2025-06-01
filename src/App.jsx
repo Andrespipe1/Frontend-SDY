@@ -22,6 +22,7 @@ import BienvenidaDashboard from './components/BienvenidaDashboardPaciente';
 import Recomendaciones from './pages/Recomendaciones';
 import BienvenidaDashboardN from './components/BienvenidaDashboardNutri';
 import HistorialPaciente from './pages/HistorialPacientes';
+import Citas from './pages/Citas';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="registro" element={<Formularios />} />
             <Route path="chat" element={<Chat />} />
             <Route path="recomendaciones" element={<Recomendaciones/>}/>
+            <Route path="citas" element={<Citas/>} />
 
             {/* Aquí puedes agregar más rutas dentro del dashboard del usuario uwu */}
           </Route>
@@ -54,6 +56,8 @@ function App() {
           <Route path="listarPacientes" element={<ListarPacientes />} />
           <Route path="chat" element={<Chat />} />
           <Route path="historial/:pacienteId" element={<HistorialPaciente />} />
+          <Route path="citas" element={<Citas/>} />
+
 
 
           </Route>
