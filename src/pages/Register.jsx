@@ -172,6 +172,7 @@ const Register = () => {
                             </label>
                             <div className="mt-2">
                                 <input
+                                    placeholder='Juan'
                                     type="text"
                                     name="nombre"
                                     id="nombre"
@@ -192,6 +193,7 @@ const Register = () => {
                             </label>
                             <div className="mt-2">
                                 <input
+                                    placeholder='Ramirez'
                                     type="text"
                                     name="apellido"
                                     id="apellido"
@@ -291,6 +293,7 @@ const Register = () => {
                         </label>
                         <div className="mt-2 relative">
                             <input
+                                placeholder='**********'
                                 type={showPassword ? "text" : "password"}
                                 name="password"
                                 id="password"

@@ -59,6 +59,8 @@ const UserDashboardLayout = () => {
             <NavLink
               key={to}
               to={to}
+              end={to === '/dashboard'} // Agregar 'end' solo para el enlace "Inicio"
+
               onClick={() => setIsSidebarOpen(false)}
               className={({ isActive }) =>
                 `flex items-center gap-2 px-3 py-2 rounded-md ${
