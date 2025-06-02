@@ -2,17 +2,11 @@ import { useState } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
 import Header from '../components/HeaderNutri'
 import Footer from '../components/Footer'
-import {
-  UserIcon,
-  FileTextIcon,
-  MessageCircleIcon,
-  MenuIcon,
-  XIcon,
-  Home,
-  ClockIcon
-} from 'lucide-react'
-
+import {UserIcon,FileTextIcon,MessageCircleIcon,MenuIcon,XIcon,Home,ClockIcon} from 'lucide-react'
+import { useAuth } from '../context/AuthProvider'
 const NutriDashboardLayout = () => {
+  const { user} = useAuth();
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const links = [
@@ -24,7 +18,9 @@ const NutriDashboardLayout = () => {
 
 
   ]
-
+  if (!user) {
+    return <div>No tienes acceso a esta página</div>;
+  }
   return (
     <div className="min-h-screen bg-gray-100 pt-16 pb-16 flex flex-col relative">
       <Header />

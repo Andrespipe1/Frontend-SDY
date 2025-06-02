@@ -1,24 +1,51 @@
-import {Link} from 'react-router-dom'
-
+import { useNavigate } from 'react-router-dom';
+import logo from '../assets/LogoF.png';
 
 const NotFound = () => {
+    const navigate = useNavigate();
+
+    const handleGoBack = () => {
+        // Si hay historial, regresa a la página anterior
+        // Si no hay historial (o viene de otro sitio), redirige al landing
+        if (window.history.length > 1) {
+            navigate(-1); // Regresa a la página anterior
+        } else {
+            navigate('/landing');
+        }
+    };
+
     return (
-        
-
-        <div className="flex flex-col items-center justify-center">
-
-            <img class="object-cover h-80 w-80 rounded-full border-4 border-solid border-slate-600"/>
-
-            <div className="flex flex-col items-center justify-center">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8">
+            <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
+                {/* Logo */}
+                <img 
+                    src={logo} 
+                    alt="Logo" 
+                    className="mx-auto h-32 w-32 border-2 border-green-600 rounded-full"
+                />
                 
-                <p className="text-3xl md:text-4xl lg:text-5xl text-gray-800 mt-12">Page Not Found</p>
+                {/* Título */}
+                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    Página no encontrada
+                </h2>
                 
-                <p className="md:text-lg lg:text-xl text-gray-600 mt-8">Lo sentimos la pagina no a sido encontrada.</p>
+                {/* Mensaje */}
+                <p className="mt-4 text-lg text-gray-600">
+                    Lo sentimos, no pudimos encontrar la página que estás buscando.
+                </p>
                 
-                <Link to="/login" className="p-3 m-5 w-full text-white text-center  bg-indigo-600  border rounded-xl hover:bg-indigo-500 hover:text-white">Regresar</Link>
-
+                {/* Botón */}
+                <div className="mt-8">
+                    <button
+                        onClick={handleGoBack}
+                        className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
+                    >
+                        Regresar
+                    </button>
+                </div>
             </div>
         </div>
-    )
-}
-export default NotFound
+    );
+};
+
+export default NotFound;

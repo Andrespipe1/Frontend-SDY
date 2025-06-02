@@ -120,7 +120,7 @@ const Recomendaciones = () => {
 
   return (
     <div className="p-6 lg:p-10 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-      <AnimatePresence>
+
         {mensaje.respuesta && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -131,15 +131,9 @@ const Recomendaciones = () => {
             <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
           </motion.div>
         )}
-      </AnimatePresence>
 
-      <motion.h1 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl font-bold text-center text-gray-800 mb-10"
-      >
-        Panel de Recomendaciones
-      </motion.h1>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 text-center mb-6">Panel de Recomendaciones</h2>
+
 
       {/* Sección de Parámetros */}
       <motion.div 

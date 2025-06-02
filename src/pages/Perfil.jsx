@@ -3,9 +3,10 @@ import axios from 'axios';
 import { FaUser, FaLock, FaSave, FaKey, FaHome, FaPhone, 
          FaBirthdayCake, FaEye, FaEyeSlash, FaCamera, FaSpinner } from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
-
-
+import { MoonStar } from 'lucide-react';
+import { useAuth } from '../context/AuthProvider';
 const Perfil = () => {
+  const { token } = useAuth();
   // Estados para el perfil y contraseña
   const [perfil, setPerfil] = useState({ 
     nombre: '',
@@ -46,7 +47,6 @@ const Perfil = () => {
       setMensaje(nuevoMensaje);
       setTimeout(() => setMensaje({}), 3000); // Limpia el mensaje después de 3 segundos
   };
-  const token = localStorage.getItem('token');
 
   // Obtener datos del perfil al cargar el componente
   useEffect(() => {

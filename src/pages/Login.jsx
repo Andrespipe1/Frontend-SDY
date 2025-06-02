@@ -5,9 +5,11 @@ import Mensaje from "../components/Alerts/Mensaje";
 import axios from "axios";
 import logo from '../assets/LogoF.png';
 import { FaHome, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useAuth } from "../context/AuthProvider";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useAuth(); // Correctamente colocado aquí
   const [mensaje, setMensaje] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -15,7 +17,6 @@ const Login = () => {
     email: "",
     password: ""
   });
-
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -27,40 +28,42 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async (e) => { 
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     
-    // Validación básica de campos
     if (!form.email || !form.password) {
       setMensaje({ respuesta: "Todos los campos son obligatorios", tipo: false });
       setLoading(false);
       return;
     }
-
+  
     try {
       const url = `${import.meta.env.VITE_BACKEND_URL}/login`;
       const { data } = await axios.post(url, form);
       
-      // Verificar que la respuesta contiene token y user
       if (!data.token || !data.user) {
         throw new Error("Respuesta inválida del servidor");
       }
-
-      // Guardar token en localStorage
-      localStorage.setItem('token', data.token);
-      
-      // Guardar datos del usuario en localStorage o contexto según tu arquitectura
-      localStorage.setItem('user', JSON.stringify(data.user));
+    
+      // Guardar información en formato consistente con el backend
+      const userData = {
+        _id: data.user._id,
+        nombre: data.user.nombre,
+        apellido: data.user.apellido,
+        email: data.user.email,
+        rol: data.user.rol,
+        // otros campos según necesites
+        ...(data.user.edad && { edad: data.user.edad }),
+        ...(data.user.direccion && { direccion: data.user.direccion }),
+        ...(data.user.celular && { celular: data.user.celular })
+      };
+  
+      // Usar el AuthProvider para hacer login
+      login(userData, data.token);
       
       // Redirigir según el rol
-      if (data.user.rol === "nutricionista") {
-        navigate("/dashboard_Nutri");
-      } else if (data.user.rol === "paciente") {
-        navigate("/dashboard");
-      } else {
-        setMensaje({ respuesta: "Rol de usuario no reconocido", tipo: false });
-      }
+      navigate(data.user.rol === "nutricionista" ? "/dashboard_Nutri" : "/dashboard");
       
     } catch (error) {
       console.error("Error en login:", error);

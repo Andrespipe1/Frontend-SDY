@@ -235,7 +235,16 @@ const Citas = () => {
       minute: '2-digit'
     });
   };
-
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-lg font-semibold text-gray-700">Cargando tus datos...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-full px-6 py-2 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
@@ -245,13 +254,13 @@ const Citas = () => {
           </div>
         )}
 
-        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 text-center">
           {userRole === 'paciente' ? 'Mis Citas' : 'Gestión de Citas'}
         </h2>
       </div>
 
       {userRole === 'paciente' && (
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-4xl bg-white p-6 rounded-lg shadow mb-8">
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-5xl bg-white p-6 rounded-lg shadow mb-8">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Solicitar Nueva Cita</h3>
           
           <form onSubmit={handleCrearCita} className="space-y-4">

@@ -2,18 +2,11 @@ import { useState } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import {
-  UserIcon,
-  FileTextIcon,
-  MessageCircleIcon,
-  HeartPulseIcon,
-  MenuIcon,
-  XIcon,
-  Home,
-  ClockIcon
-} from 'lucide-react'
+import {UserIcon,FileTextIcon,MessageCircleIcon,HeartPulseIcon,MenuIcon,XIcon,Home,ClockIcon} from 'lucide-react'
+import { useAuth } from '../context/AuthProvider'
 
 const UserDashboardLayout = () => {
+  const { user } = useAuth()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const links = [
@@ -25,7 +18,9 @@ const UserDashboardLayout = () => {
     { to: 'citas', icon: <ClockIcon className="w-5 h-5" />, text: 'Citas' },
 
   ]
-
+  if (!user) {
+    return <div>No tienes acceso a esta página</div>;
+  }
   return (
     <div className="min-h-screen bg-gray-100 pt-16 pb-16 flex flex-col relative">
       <Header />
