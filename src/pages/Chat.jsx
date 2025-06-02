@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { io } from 'socket.io-client';
+import { useAuth } from '../context/AuthProvider';
 
 const Chat = () => {
-
+  const { user } = useAuth();
   const [responses, setResponses] = useState([]);
   const [socket, setSocket] = useState(null);
-  const [chat, setChat] = useState(true);
   const [nameUser, setNameUser] = useState("");
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
+  const messagesEndRef = useRef(null);
 
-  const handleEnterChat = (data) => {
-    setNameUser(data.name);
-    setChat(false);
-  };
+  useEffect(() => {
+    if (user) {
+      setNameUser(user.nombre || user.email);
+    }
+  }, [user]);
 
   const handleMessageChat = (data) => {
     if (!socket) return console.error("No hay conexión con el servidor");
@@ -36,56 +38,62 @@ const Chat = () => {
     return () => newSocket.disconnect();
   }, []);
 
-  return (
-    <>
-      {
-        chat
-          ? (
-            <div>
-              <form onSubmit={handleSubmit(handleEnterChat)} className="flex justify-center gap-5">
-                <input
-                  type="text"
-                  placeholder="Ingresa tu nombre de usuario"
-                  className="block w-1/2 rounded-md border border-gray-300 focus:border-purple-700 focus:outline-none focus:ring-1 focus:ring-purple-700 py-1 px-2 text-gray-500"
-                  {...register("name", { required: "El nombre de usuario es obligatorio" })}
-                />
-                <button className="py-2 w-1/2 block text-center bg-gray-500 text-slate-300 border rounded-xl hover:scale-100 duration-300 hover:bg-gray-900 hover:text-white">Ingresar al chat</button>
-              </form>
-              {errors.name && <p className="text-red-800">{errors.name.message}</p>}
-            </div>
-          )
-          : (
-            <div className="flex flex-col justify-center h-full">
-              <div className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
-                {
-                  responses.map((response, index) => (
-                    <div key={index} className={`my-2 p-4 text-sm rounded-md text-white ${response.from === nameUser ? 'bg-slate-700' : 'bg-black ml-auto'}`}>
-                      {response.from} - {response.body}
-                    </div>
-                  ))
-                }
-              </div>
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [responses]);
 
-              <div className="border-t-2 border-gray-200 px-4 pt-4 mb-2 sm:mb-0">
-                <form onSubmit={handleSubmit(handleMessageChat)}>
-                  <div className="relative flex">
-                    <input
-                      type="text"
-                      placeholder="Escribe tu mensaje!"
-                      className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-2 bg-gray-200 rounded-md py-3"
-                      {...register("message", { required: "El mensaje es obligatorio" })}
-                    />
-                    <button className="inline-flex items-center justify-center rounded-lg px-4 py-3 transition duration-500 ease-in-out text-white bg-green-800 hover:bg-green-600 focus:outline-none">
-                      <span className="font-bold">Enviar</span>
-                    </button>
-                  </div>
-                  {errors.message && <p className="text-red-800">{errors.message.message}</p>}
-                </form>
+  return (
+    <div className="flex flex-col h-full bg-[#F5F5F5] pb-20"> {/* Añadido pb-20 para el footer */}
+      {/* Área de mensajes */}
+      <div className="flex-1 overflow-y-auto p-4" style={{ paddingBottom: '80px' }}> {/* Espacio para el input */}
+        <div className="space-y-3">
+          {responses.map((response, index) => (
+            <div
+              key={index}
+              className={`flex ${response.from === nameUser ? 'justify-end' : 'justify-start'}`}
+            >
+              <div
+                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl shadow-md ${
+                  response.from === nameUser
+                    ? 'bg-blue-800 text-white'
+                    : 'bg-white text-gray-800 border border-gray-300'
+                }`}
+              >
+                {response.from !== nameUser && (
+                  <p className="text-xs font-semibold text-green-600 mb-1">{response.from}</p>
+                )}
+                <p className="text-sm break-words">{response.body}</p>
+                <p className="text-right text-xs text-gray-400 mt-1">
+                  {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
               </div>
             </div>
-          )
-      }
-    </>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+      </div>
+
+      {/* Input de mensaje (ahora sticky en lugar de fixed) */}
+      <div className="bg-white p-4 border-t border-gray-300 sticky bottom-20 left-0 right-0 z-10"> {/* bottom-20 para el footer */}
+        <form onSubmit={handleSubmit(handleMessageChat)} className="flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Escribe un mensaje..."
+            className="flex-1 rounded-full border border-gray-300 py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-400"
+            {...register("message", { required: "El mensaje no puede estar vacío" })}
+          />
+          <button
+            type="submit"
+            className="bg-gradient-to-r from-green-400 to-blue-600 hover:from-green-500 hover:to-blue-700 text-white rounded-full p-2 focus:outline-none transition-all"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+            </svg>
+          </button>
+        </form>
+        {errors.message && <p className="text-red-600 text-sm mt-1">{errors.message.message}</p>}
+      </div>
+    </div>
   );
 };
 

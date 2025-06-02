@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaCalendarAlt, FaClock, FaTrash, FaCheck, FaTimes, FaSearch } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaTrash, FaCheck, FaTimes, FaSearch, FaVideo } from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
 
 const Citas = () => {
@@ -15,6 +15,7 @@ const Citas = () => {
   const [userRole, setUserRole] = useState('');
   const [userId, setUserId] = useState('');
   const [fechaConfirmacion, setFechaConfirmacion] = useState('');
+  const [linkReunion, setLinkReunion] = useState('');
   const [citaAConfirmar, setCitaAConfirmar] = useState(null);
   const token = localStorage.getItem('token');
 
@@ -136,10 +137,21 @@ const Citas = () => {
       return;
     }
 
+    if (citaAConfirmar?.modalidad === 'virtual' && !linkReunion) {
+      mostrarMensaje({
+        respuesta: 'Para citas virtuales es necesario proporcionar el link de la reunión',
+        tipo: false
+      });
+      return;
+    }
+
     try {
       const { data } = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/confirmar-cita/${citaAConfirmar._id}`,
-        { fecha: fechaConfirmacion },
+        { 
+          fecha: fechaConfirmacion,
+          linkReunion: citaAConfirmar.modalidad === 'virtual' ? linkReunion : undefined
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -149,6 +161,7 @@ const Citas = () => {
       });
 
       setFechaConfirmacion('');
+      setLinkReunion('');
       setCitaAConfirmar(null);
       obtenerCitas(userRole, userId);
     } catch (error) {
@@ -213,6 +226,7 @@ const Citas = () => {
     const nutriApellido = cita.nutricionista?.apellido?.toLowerCase() || '';
     const descripcionLower = cita.descripcion.toLowerCase();
     const estadoLower = cita.estado.toLowerCase();
+    const linkLower = cita.linkReunion?.toLowerCase() || '';
 
     return (
       pacienteNombre.includes(searchTermLower) ||
@@ -221,6 +235,7 @@ const Citas = () => {
       nutriApellido.includes(searchTermLower) ||
       descripcionLower.includes(searchTermLower) ||
       estadoLower.includes(searchTermLower) ||
+      linkLower.includes(searchTermLower) ||
       (cita.fecha && new Date(cita.fecha).toLocaleString().includes(searchTerm))
     );
   });
@@ -235,16 +250,7 @@ const Citas = () => {
       minute: '2-digit'
     });
   };
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-lg font-semibold text-gray-700">Cargando tus datos...</p>
-        </div>
-      </div>
-    );
-  }
+
   return (
     <div className="min-h-full px-6 py-2 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
@@ -254,13 +260,13 @@ const Citas = () => {
           </div>
         )}
 
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 text-center">
+        <h2 className="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">
           {userRole === 'paciente' ? 'Mis Citas' : 'Gestión de Citas'}
         </h2>
       </div>
 
       {userRole === 'paciente' && (
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-5xl bg-white p-6 rounded-lg shadow mb-8">
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-4xl bg-white p-6 rounded-lg shadow mb-8">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Solicitar Nueva Cita</h3>
           
           <form onSubmit={handleCrearCita} className="space-y-4">
@@ -338,8 +344,6 @@ const Citas = () => {
         </div>
       </div>
 
-
-      {/* Sección de confirmación de cita (solo para nutricionistas) */}
       {userRole === 'nutricionista' && citaAConfirmar && (
         <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-4xl bg-white p-6 rounded-lg shadow mb-8">
           <h3 className="text-lg font-medium text-gray-900 mb-4">Confirmar Cita</h3>
@@ -357,7 +361,6 @@ const Citas = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            {/* Input de fecha */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Fecha de la cita
@@ -376,7 +379,6 @@ const Citas = () => {
               />
             </div>
 
-            {/* Input de hora */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Hora de la cita
@@ -394,10 +396,29 @@ const Citas = () => {
               />
             </div>
           </div>
+
+          {citaAConfirmar.modalidad === 'virtual' && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Link de la reunión (Zoom, Google Meet, etc.)
+              </label>
+              <input
+                type="url"
+                value={linkReunion}
+                onChange={(e) => setLinkReunion(e.target.value)}
+                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:ring-green-500"
+                placeholder="https://meet.google.com/xxx-yyyy-zzz"
+                required={citaAConfirmar.modalidad === 'virtual'}
+              />
+            </div>
+          )}
           
           <div className="flex justify-end gap-3 pt-4">
             <button
-              onClick={() => setCitaAConfirmar(null)}
+              onClick={() => {
+                setCitaAConfirmar(null);
+                setLinkReunion('');
+              }}
               className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
             >
               Cancelar
@@ -428,7 +449,7 @@ const Citas = () => {
                     {userRole === 'paciente' ? 'Nutricionista' : 'Paciente'}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha y Reunión</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                 </tr>
@@ -457,9 +478,21 @@ const Citas = () => {
                       <div className="text-sm text-gray-900 max-w-xs truncate">{cita.descripcion}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 flex items-center gap-1">
-                        <FaClock className="text-green-600" />
-                        {formatFecha(cita.fecha)}
+                      <div className="text-sm text-gray-900 flex flex-col gap-1">
+                        <div className="flex items-center gap-1">
+                          <FaClock className="text-green-600" />
+                          {formatFecha(cita.fecha)}
+                        </div>
+                        {cita.linkReunion && (
+                          <a 
+                            href={cita.linkReunion} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-blue-600 hover:underline text-xs"
+                          >
+                            <FaVideo /> Unirse a la reunión
+                          </a>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
