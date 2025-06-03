@@ -20,6 +20,7 @@ import Recomendaciones from './pages/Recomendaciones';
 import BienvenidaDashboardN from './components/BienvenidaDashboardNutri';
 import HistorialPaciente from './pages/HistorialPacientes';
 import Citas from './pages/Citas';
+import ChatCompleto from './pages/ChatCompleto';
 
 function App() {
   return (
@@ -45,7 +46,7 @@ function App() {
               <Route index element={<BienvenidaDashboard rol="paciente" />} />
               <Route path="perfil" element={<Perfil />} />
               <Route path="registro" element={<Formularios />} />
-              <Route path="chat" element={<Chat />} />
+              <Route path="chat" element={<ChatCompleto />} />
               <Route path="recomendaciones" element={<Recomendaciones />} />
               <Route path="citas" element={<Citas />} />
             </Route>
@@ -57,7 +58,7 @@ function App() {
               <Route index element={<BienvenidaDashboardN />} />
               <Route path="perfilNutri" element={<PerfilNutri />} />
               <Route path="listarPacientes" element={<ListarPacientes />} />
-              <Route path="chat" element={<Chat />} />
+              <Route path="chat" element={<ChatCompleto />} />
               <Route path="historial/:pacienteId" element={<HistorialPaciente />} />
               <Route path="citas" element={<Citas />} />
             </Route>
