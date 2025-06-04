@@ -251,7 +251,18 @@ const Citas = () => {
     });
   };
 
+
   return (
+    loading ? (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-lg font-semibold text-gray-700">Cargando tus citas...</p>
+        </div>
+      </div>
+    ) : (
+      
+    
     <div className="min-h-full px-6 py-2 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
         {Object.keys(mensaje).length > 0 && (
@@ -547,6 +558,7 @@ const Citas = () => {
         Mostrando {filteredCitas.length} de {citas.length} citas
       </div>
     </div>
+    )
   );
 };
 

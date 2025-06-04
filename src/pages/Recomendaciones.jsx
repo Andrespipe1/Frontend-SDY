@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import Mensaje from '../components/Alerts/Mensaje';
-
+import TextoExpandible from '../components/TextoExpandible';
 const Recomendaciones = () => {
   const [parametros, setParametros] = useState(null);
   const [comidas, setComidas] = useState([]);
@@ -226,7 +226,7 @@ const Recomendaciones = () => {
               animate={{ opacity: 1, y: 0 }}
               className="p-4 bg-purple-50 rounded-lg"
             >
-              <p className="text-gray-700 whitespace-pre-line">{ultimaRecomendacionParametros.contenido}</p>
+              <TextoExpandible texto={ultimaRecomendacionParametros.contenido} />
               <p className="text-xs text-gray-500 mt-3">
                 Generado el: {new Date(ultimaRecomendacionParametros.createdAt).toLocaleDateString()}
               </p>
@@ -336,7 +336,7 @@ const Recomendaciones = () => {
                     </svg>
                     {tipoComida}:
                   </p>
-                  <p className="text-gray-600 mt-1 ml-7 whitespace-pre-line">{detalle}</p>
+                  <TextoExpandible texto={detalle} />
                 </div>
               ))}
               <p className="text-xs text-gray-500 mt-3">

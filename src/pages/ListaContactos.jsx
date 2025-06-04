@@ -57,12 +57,17 @@ const ListaContactos = ({ onSelectContacto }) => {
             onClick={() => onSelectContacto(contacto)}
           >
             <div className="flex items-center space-x-3">
-              {contacto.avatar && (
+              {contacto.avatar ? (
                 <img
                   src={contacto.avatar}
                   alt={contacto.nombre}
                   className="w-10 h-10 rounded-full object-cover"
                 />
+              ) : (
+                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                  {contacto.nombre?.charAt(0)?.toUpperCase() || ''}
+
+                </div>
               )}
               <div>
                 <p className="font-medium">
