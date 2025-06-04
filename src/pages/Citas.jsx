@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaCalendarAlt, FaClock, FaTrash, FaCheck, FaTimes, FaSearch, FaVideo } from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
-
+import { jwtDecode } from 'jwt-decode';
 const Citas = () => {
   const [citas, setCitas] = useState([]);
   const [modalidad, setModalidad] = useState('presencial');
@@ -27,42 +27,61 @@ const Citas = () => {
   useEffect(() => {
     const obtenerDatosIniciales = async () => {
       try {
+        // Primero determinar el rol del usuario
+        const decodedToken = jwtDecode(token); // Asegúrate de importar jwtDecode
+        
+        // Determinar el rol basado en el token
+        const userRole = decodedToken.rol || decodedToken.role;
+        
+        // Hacer la petición al endpoint correcto según el rol
         let perfilResponse;
-        try {
-          perfilResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/perfil`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-        } catch (error) {
+        if (userRole === 'nutricionista') {
           perfilResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/perfilNutri`, {
             headers: { Authorization: `Bearer ${token}` }
           });
+        } else {
+          perfilResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/perfil`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
         }
-        
-        setUserRole(perfilResponse.data.role || perfilResponse.data.rol || 'paciente');
+    
+        // Validar que la respuesta tenga datos
+        if (!perfilResponse.data) {
+          throw new Error('Datos de perfil no recibidos');
+        }
+    
+        // Establecer estados
+        const role = perfilResponse.data.role || perfilResponse.data.rol || userRole;
+        setUserRole(role);
         setUserId(perfilResponse.data._id);
-
-        if ((perfilResponse.data.role || perfilResponse.data.rol) === 'paciente') {
+    
+        // Si es paciente, cargar nutricionistas
+        if (role === 'paciente') {
           const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/listar-nutricionistas`, {
             headers: { Authorization: `Bearer ${token}` }
           });
-          setNutricionistas(data);
+          setNutricionistas(Array.isArray(data) ? data : []);
           if (data.length > 0) {
             setNutricionistaId(data[0]._id);
           }
         }
-
-        obtenerCitas(perfilResponse.data.role || perfilResponse.data.rol, perfilResponse.data._id);
+    
+        obtenerCitas(role, perfilResponse.data._id);
       } catch (error) {
         console.error('Error al obtener datos iniciales:', error);
         mostrarMensaje({
-          respuesta: error.response?.data?.msg || 'Error al cargar datos',
+          respuesta: error.response?.data?.msg || 'Error al cargar datos del perfil',
           tipo: false
         });
+        // Opcional: redirigir a login si hay error de autenticación
+        if (error.response?.status === 401) {
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+        }
       } finally {
         setLoading(false);
       }
     };
-
     obtenerDatosIniciales();
   }, [token]);
 

@@ -170,9 +170,19 @@ const HistorialPaciente = () => {
           {/* Información del paciente */}
           <div className="bg-white rounded-lg shadow-md p-4 mb-6">
             <div className="flex items-center">
-              <div className="h-16 w-16 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+            <div className='h-18 w-18 rounded-full'>
+                    {pacienteInfo.avatar ? (
+                    <img
+                      src={pacienteInfo.avatar}
+                      alt={pacienteInfo.nombre}
+                      className="w-18 h-18 rounded-full object-cover"
+                    />
+                  ) : (
+              <div className="h-18 w-18 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
                 {pacienteInfo.nombre.charAt(0)}{pacienteInfo.apellido.charAt(0)}
               </div>
+                  )}
+            </div>
               <div className="ml-4">
                 <h1 className="text-2xl font-bold text-gray-800">
                   {pacienteInfo.nombre} {pacienteInfo.apellido}

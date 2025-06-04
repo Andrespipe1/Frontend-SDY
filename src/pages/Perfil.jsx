@@ -189,7 +189,7 @@ const Perfil = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-2 px-4 sm:px-6 lg:px-16">
       {/* Mensaje */}
       {Object.keys(mensaje).length > 0 && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md">
@@ -201,7 +201,7 @@ const Perfil = () => {
         <p className="mt-2 text-lg text-gray-600 text-center">Administra tu información personal y seguridad</p>
 
         {/* Sección de Avatar */}
-        <div className="flex flex-col items-center mb-8 mt-4">
+        <div className="flex flex-col items-center mb-2 mt-4">
           <div className="relative group mb-4">
             <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200 flex items-center justify-center">
               {perfil.avatar || previewImage ? (

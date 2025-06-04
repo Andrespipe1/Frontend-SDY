@@ -50,8 +50,19 @@ const ModalPaciente = ({
             {/* Columna izquierda */}
             <div>
               <div className="flex items-center mb-6">
-                <div className="h-16 w-16 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                  {paciente.nombre.charAt(0)}{paciente.apellido.charAt(0)}
+                {/* Avatar del paciente */}
+                <div className='h-16 w-16 rounded-full'>
+                    {paciente.avatar ? (
+                    <img
+                      src={paciente.avatar}
+                      alt={paciente.nombre}
+                      className="w-16 h-16 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-16 w-16 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                      {paciente.nombre.charAt(0)}{paciente.apellido.charAt(0)}
+                    </div>
+                    )}
                 </div>
                 <div className="ml-4">
                   <h4 className="text-lg font-semibold text-gray-900">

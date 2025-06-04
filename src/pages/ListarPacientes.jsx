@@ -184,9 +184,17 @@ const ListarPacientes = () => {
                   <tr key={paciente._id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
+                      {paciente.avatar ? (
+                        <img
+                          src={paciente.avatar}
+                          alt={paciente.nombre}
+                          className="w-10 h-10 rounded-full object-cover"
+                        />
+                      ) : (
                         <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white font-bold">
                           {paciente.nombre.charAt(0)}{paciente.apellido.charAt(0)}
                         </div>
+                      )}
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">{paciente.nombre} {paciente.apellido}</div>
                           <div className="text-sm text-gray-500">{paciente.edad} años</div>
