@@ -92,7 +92,7 @@ const BienvenidaDashboard = ({ rol }) => {
             </li>
             <li className="flex justify-between items-center">
               <span className="text-gray-600">Carmen Díaz</span>
-              <span className="text-sm text-gray-500">Le dio sida</span>
+              <span className="text-sm text-gray-500">Se golpeó el dedo del pie</span>
             </li>
           </ul>
         </div>
