@@ -12,7 +12,7 @@ const Chat = ({ contacto, onBack }) => {
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   useEffect(() => {
-    const newSocket = io("http://localhost:3000", {
+    const newSocket = io("https://backend-sdy.onrender.com/", {
       withCredentials: true
     });
     setSocket(newSocket);
