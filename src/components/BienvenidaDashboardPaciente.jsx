@@ -7,14 +7,14 @@ const BienvenidaDashboard = ({ rol }) => {
   
   const images = [
     {
-      url: '/src/assets/poster1.avif',
+      url: '/src/public/assets/poster1.avif',
       title: esNutri ? 'Gestión de Pacientes' : 'Seguimiento Personalizado',
       description: esNutri 
         ? 'Controla el progreso de todos tus pacientes' 
         : 'Registra tu evolución diaria'
     },
     {
-      url: '/src/assets/poster2.jpg',
+      url: '/src/public/assets/poster2.jpg',
       title: esNutri ? 'Comunicación Efectiva' : 'Conecta con tu Nutricionista',
       description: esNutri 
         ? 'Chat en tiempo real con tus pacientes' 
