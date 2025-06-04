@@ -197,20 +197,28 @@ const Perfil = () => {
           </div>
         )}
 
+        <h1 className="text-3xl font-extrabold text-gray-900 text-center">Mi Perfil</h1>
+        <p className="mt-2 text-lg text-gray-600 text-center">Administra tu información personal y seguridad</p>
+
         {/* Sección de Avatar */}
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center mb-8 mt-4">
           <div className="relative group mb-4">
             <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200 flex items-center justify-center">
-              <img 
-                src={previewImage || perfil.avatar || '/default-avatar.png'} 
-                alt="Avatar" 
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.src = '/default-avatar.png';
-                }}
-              />
+              {perfil.avatar || previewImage ? (
+                <img
+                  src={previewImage || perfil.avatar}
+                  alt="Avatar"
+                  className="w-full h-full object-cover"
+                  onError={(e) => (e.target.src = '/default-avatar.png')}
+                />
+              ) : (
+                <div className="flex-shrink-0 h-full w-full rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-4xl">
+                  {perfil.nombre?.charAt(0)?.toUpperCase() || ''}
+                  {perfil.apellido?.charAt(0)?.toUpperCase() || ''}
+                </div>
+              )}
             </div>
-            <label 
+            <label
               htmlFor="avatar-upload"
               className="absolute bottom-3 right-3 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition-all shadow-md transform hover:scale-110"
               title="Cambiar foto de perfil"
