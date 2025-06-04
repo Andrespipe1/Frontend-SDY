@@ -1,24 +1,33 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
+import poster1 from '../public/assets/poster1.avif';
+import poster2 from '../public/assets/poster2.jpg';
+import poster3 from '../public/assets/poster3.jpg';
 const BienvenidaDashboard = ({ rol }) => {
   const esNutri = rol === 'nutri';
   const [currentImage, setCurrentImage] = useState(0);
   
   const images = [
     {
-      url: '/src/public/assets/poster1.avif',
+      url: poster1,
       title: esNutri ? 'Gestión de Pacientes' : 'Seguimiento Personalizado',
       description: esNutri 
         ? 'Controla el progreso de todos tus pacientes' 
         : 'Registra tu evolución diaria'
     },
     {
-      url: '/src/public/assets/poster2.jpg',
+      url: poster2,
       title: esNutri ? 'Comunicación Efectiva' : 'Conecta con tu Nutricionista',
       description: esNutri 
         ? 'Chat en tiempo real con tus pacientes' 
         : 'Consulta directamente con profesionales'
+    },
+    {
+      url: poster3,
+      title: esNutri ? 'Comunicación Efectiva' : 'Ayuda Inteligente',
+      description: esNutri 
+        ? 'Chat en tiempo real con tus pacientes' 
+        : 'Genera recomendaciones personalizadas con IA'
     }
   ];
 
