@@ -11,6 +11,7 @@ const Citas = () => {
   const [nutricionistas, setNutricionistas] = useState([]);
   const [mensaje, setMensaje] = useState({});
   const [loading, setLoading] = useState(true);
+  const [loadingBoton, setLoadingBoton] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [userRole, setUserRole] = useState('');
   const [userId, setUserId] = useState('');
@@ -79,7 +80,7 @@ const Citas = () => {
           window.location.href = '/login';
         }
       } finally {
-        setLoading(false);
+        
       }
     };
     obtenerDatosIniciales();
@@ -105,20 +106,28 @@ const Citas = () => {
         tipo: false
       });
       setCitas([]);
+    }finally {
+      setLoading(false);
     }
   };
 
   const handleCrearCita = async (e) => {
     e.preventDefault();
-    
+  
+    // Si ya está en proceso de carga, no permitir más clics
+    if (loadingBoton) return;
+  
+    setLoadingBoton(true); // Deshabilitar el botón
+  
     if (!descripcion || !nutricionistaId) {
       mostrarMensaje({
         respuesta: 'Por favor completa todos los campos obligatorios',
         tipo: false
       });
+      setLoadingBoton(false); // Habilitar el botón nuevamente
       return;
     }
-
+  
     try {
       const { data } = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/registrar-cita`,
@@ -130,12 +139,12 @@ const Citas = () => {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
+  
       mostrarMensaje({
         respuesta: data.msg || 'Cita creada correctamente. El nutricionista la confirmará pronto.',
         tipo: true
       });
-
+  
       setDescripcion('');
       obtenerCitas(userRole, userId);
     } catch (error) {
@@ -144,6 +153,8 @@ const Citas = () => {
         respuesta: error.response?.data?.msg || 'Error al crear cita',
         tipo: false
       });
+    } finally {
+      setLoadingBoton(false); // Habilitar el botón nuevamente
     }
   };
 
@@ -348,12 +359,21 @@ const Citas = () => {
             </div>
 
             <div className="pt-2">
-              <button
-                type="submit"
-                className="w-full flex justify-center items-center gap-2 py-2 px-4 bg-green-600 text-white rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all"
-              >
-                <FaCalendarAlt /> Solicitar Cita
-              </button>
+            <button
+              type="submit"
+              className="w-full flex justify-center items-center gap-2 py-2 px-4 bg-green-600 text-white rounded-md shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all"
+              disabled={loading}
+            >
+              {loadingBoton ? (
+                <>
+                  <FaCalendarAlt /> Procesando...
+                </>
+              ) : (
+                <>
+                  <FaCalendarAlt /> Solicitar Cita
+                </>
+              )}
+            </button>
             </div>
           </form>
         </div>

@@ -42,17 +42,16 @@ const EstadisticasPacientes = () => {
                   headers: { 'Authorization': `Bearer ${token}` }
                 }
               );
-              console.log(`Parámetros de ${paciente.nombre}:`, res.data); // Depuración
+
               return { ...paciente, parametros: res.data };
             } catch (error) {
-              console.error(`Error obteniendo parámetros de ${paciente.nombre}:`, error);
+
               return { ...paciente, parametros: [] };
             }
           })
         );
 
-        // Calcular estadísticas
-        console.log("Datos que se enviarán a calcularEstadisticas:", pacientesConParametros);
+
 
         calcularEstadisticas(pacientesConParametros);
       } catch (error) {

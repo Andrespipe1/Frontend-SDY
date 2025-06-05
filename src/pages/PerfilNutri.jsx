@@ -19,6 +19,7 @@ const PerfilNutri = () => {
     passwordactual: '',
     passwordnuevo: ''
   });
+  const [loading, setLoading] = useState(true);
 
   const mostrarMensaje = (nuevoMensaje) => {
     setMensaje(nuevoMensaje);
@@ -38,6 +39,8 @@ const PerfilNutri = () => {
         setPerfil(data);
       } catch (error) {
         mostrarMensaje({ respuesta: 'Error al obtener el perfil', tipo: false });
+      }finally {
+        setLoading(false);
       }
     };
 
@@ -141,6 +144,14 @@ const PerfilNutri = () => {
 
 
   return (
+    loading ? (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-lg font-semibold text-gray-700">Cargando tu perfil...</p>
+        </div>
+      </div>
+    ) : (
     <div className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8">
       {/* Mensajes (se mantiene igual) */}
       <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md">
@@ -344,6 +355,7 @@ const PerfilNutri = () => {
         </div>
       </div>
     </div>
+    )
   );
 };
 

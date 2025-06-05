@@ -6,6 +6,7 @@ import Mensaje from '../components/Alerts/Mensaje';
 import { MoonStar } from 'lucide-react';
 import { useAuth } from '../context/AuthProvider';
 const Perfil = () => {
+
   const { token } = useAuth();
   // Estados para el perfil y contraseña
   const [perfil, setPerfil] = useState({ 
@@ -28,7 +29,7 @@ const Perfil = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState('');
   const [isUploading, setIsUploading] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   // Estados para validaciones
   const [errors, setErrors] = useState({
     edad: '',
@@ -58,9 +59,11 @@ const Perfil = () => {
         setPerfil(data);
       } catch (error) {
         mostrarMensaje({ respuesta: 'Error al obtener el perfil', tipo: false });
+      }finally {
+        setLoading(false);
       }
     };
-
+    
     obtenerPerfil();
   }, []);
 
@@ -189,6 +192,14 @@ const Perfil = () => {
   };
 
   return (
+    loading ? (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-lg font-semibold text-gray-700">Cargando tu perfil...</p>
+        </div>
+      </div>
+    ) : (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-2 px-4 sm:px-6 lg:px-16">
       {/* Mensaje */}
       {Object.keys(mensaje).length > 0 && (
@@ -476,7 +487,7 @@ const Perfil = () => {
           </div>
         </div>
       </div>
-
+    )
   );
 
 };
