@@ -62,10 +62,10 @@ const ListarPacientes = () => {
     setIdToDelete(null);
     setIsDeleteModalOpen(false);
   };
-  // Eliminar paciente
+  // Bloquear paciente
   const confirmDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/eliminar-paciente/${idToDelete}`, {
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/bloquear-paciente/${idToDelete}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
