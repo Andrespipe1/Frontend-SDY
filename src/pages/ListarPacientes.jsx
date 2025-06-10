@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Mensaje from '../components/Alerts/Mensaje';
-import { FaUserEdit, FaTrash, FaUser, FaSearch } from 'react-icons/fa';
+import { FaUserEdit, FaTrash, FaUser, FaSearch, FaLock } from 'react-icons/fa';
 import logo from '../assets/LogoF.png';
 import ModalPaciente from '../components/Modals/Modal';
 import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
+
 const ListarPacientes = () => {
   const [pacientes, setPacientes] = useState([]);
   const [mensaje, setMensaje] = useState({});
@@ -14,6 +15,8 @@ const ListarPacientes = () => {
   const [pacienteSeleccionado, setPacienteSeleccionado] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // Número de pacientes por página
   const token = localStorage.getItem('token');
 
   // Función para mostrar mensaje con temporizador
@@ -53,6 +56,7 @@ const ListarPacientes = () => {
 
     obtenerPacientes();
   }, [token]);
+
   const openDeleteModal = (id) => {
     setIdToDelete(id);
     setIsDeleteModalOpen(true);
@@ -62,6 +66,7 @@ const ListarPacientes = () => {
     setIdToDelete(null);
     setIsDeleteModalOpen(false);
   };
+
   // Bloquear paciente
   const confirmDelete = async () => {
     try {
@@ -117,6 +122,16 @@ const ListarPacientes = () => {
     );
   });
 
+  // Paginación
+  const totalPages = Math.ceil(filteredPacientes.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedPacientes = filteredPacientes.slice(startIndex, endIndex);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     loading ? (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -131,7 +146,7 @@ const ListarPacientes = () => {
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={confirmDelete}
-        message="¿Estás seguro de que deseas eliminar este paciente?"
+        message="¿Estás seguro de que deseas bloquear este paciente?"
       />
     <div className="min-h-full px-6 py-2 lg:px-8">
       {/* Logo y título */}
@@ -172,7 +187,7 @@ const ListarPacientes = () => {
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-4xl bg-white rounded-lg shadow overflow-hidden">
         {loading ? (
           <div className="p-8 text-center">Cargando pacientes...</div>
-        ) : filteredPacientes.length === 0 ? (
+        ) : paginatedPacientes.length === 0 ? (
           <div className="p-8 text-center">
             {searchTerm ? 'No se encontraron pacientes con ese criterio' : 'No hay pacientes registrados'}
           </div>
@@ -188,7 +203,7 @@ const ListarPacientes = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredPacientes.map((paciente) => (
+                {paginatedPacientes.map((paciente) => (
                   <tr key={paciente._id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -226,13 +241,15 @@ const ListarPacientes = () => {
                       >
                         <FaUser size={18} />
                       </button>
-                      <button
-                        onClick={() => openDeleteModal(paciente._id)}
-                        className="text-red-600 hover:text-red-900 cursor-pointer"
-                        title="Eliminar"
-                      >
-                        <FaUserEdit size={18} />
-                      </button>
+                      {paciente.status && (
+                        <button
+                          onClick={() => openDeleteModal(paciente._id)}
+                          className="text-red-600 hover:text-red-900 cursor-pointer"
+                          title="Bloquear"
+                        >
+                          <FaLock size={18} />
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -242,9 +259,22 @@ const ListarPacientes = () => {
         )}
       </div>
 
+      {/* Paginación */}
+      <div className="mt-6 flex justify-center">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handlePageChange(index + 1)}
+            className={`px-4 py-2 mx-1 rounded-md ${currentPage === index + 1 ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
+
       {/* Pie de página */}
       <div className="mt-6 text-center text-sm text-gray-500">
-        Mostrando {filteredPacientes.length} de {pacientes.length} pacientes
+        Mostrando {paginatedPacientes.length} de {filteredPacientes.length} pacientes
       </div>
 
       {/* Modal para ver perfil de paciente */}
