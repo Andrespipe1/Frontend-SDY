@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Mensaje from '../components/Alerts/Mensaje';
-import { FaUserEdit, FaTrash, FaUser, FaSearch, FaLock } from 'react-icons/fa';
+import {FaUser, FaSearch, FaLock } from 'react-icons/fa';
 import logo from '../assets/LogoF.png';
 import ModalPaciente from '../components/Modals/Modal';
 import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';

@@ -59,10 +59,6 @@ const Recomendaciones = () => {
         );
       } catch (error) {
         console.error('Error al obtener datos:', error);
-        mostrarMensaje({
-          respuesta: error.response?.data?.msg || 'Error al obtener datos',
-          tipo: false,
-        });
       } finally {
         setIsLoading(false);
       }
