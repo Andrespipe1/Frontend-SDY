@@ -4,7 +4,7 @@ import Mensaje from '../components/Alerts/Mensaje';
 import {FaUser, FaSearch, FaLock } from 'react-icons/fa';
 import logo from '../assets/LogoF.png';
 import ModalPaciente from '../components/Modals/Modal';
-import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
+import ConfirmDeleteModal from '../components/Modals/ConfirmBlockModal';
 
 const ListarPacientes = () => {
   const [pacientes, setPacientes] = useState([]);
@@ -16,16 +16,14 @@ const ListarPacientes = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(10); // Número de pacientes por página
+  const [itemsPerPage] = useState(10);
   const token = localStorage.getItem('token');
 
-  // Función para mostrar mensaje con temporizador
   const mostrarMensaje = (nuevoMensaje) => {
     setMensaje(nuevoMensaje);
     setTimeout(() => setMensaje({}), 3000);
   };
 
-  // Obtener lista de pacientes
   useEffect(() => {
     const obtenerPacientes = async () => {
       try {
@@ -95,7 +93,7 @@ const ListarPacientes = () => {
     }
   };
 
-  // Abrir modal con paciente seleccionado
+
   const abrirModalPaciente = async (pacienteId) => {
     try {
       const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/listar-pacientes/${pacienteId}`, {
@@ -103,7 +101,7 @@ const ListarPacientes = () => {
           Authorization: `Bearer ${token}`
         }
       });
-      setPacienteSeleccionado(data.paciente); // Asignar los datos completos del paciente
+      setPacienteSeleccionado(data.paciente);
       setModalAbierto(true);
     } catch (error) {
       mostrarMensaje({
@@ -157,7 +155,6 @@ const ListarPacientes = () => {
         message="¿Estás seguro de que deseas bloquear este paciente?"
       />
     <div className="min-h-full px-6 py-2 lg:px-8">
-      {/* Logo y título */}
       <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
         {Object.keys(mensaje).length > 0 && (
           <div className="mb-6">

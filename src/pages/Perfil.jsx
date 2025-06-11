@@ -3,12 +3,12 @@ import axios from 'axios';
 import { FaUser, FaLock, FaSave, FaKey, FaHome, FaPhone, 
          FaBirthdayCake, FaEye, FaEyeSlash, FaCamera, FaSpinner } from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
-import { MoonStar } from 'lucide-react';
+
 import { useAuth } from '../context/AuthProvider';
 const Perfil = () => {
 
   const { token } = useAuth();
-  // Estados para el perfil y contraseña
+
   const [perfil, setPerfil] = useState({ 
     nombre: '',
     apellido: '', 
@@ -25,12 +25,12 @@ const Perfil = () => {
     passwordnuevo: ''
   });
 
-  // Estados para la gestión del avatar
+
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState('');
   const [isUploading, setIsUploading] = useState(false);
   const [loading, setLoading] = useState(true);
-  // Estados para validaciones
+
   const [errors, setErrors] = useState({
     edad: '',
     celular: '',
@@ -43,13 +43,22 @@ const Perfil = () => {
   });
 
   const [mensaje, setMensaje] = useState({});
-    // Función para mostrar mensajes
+
   const mostrarMensaje = (nuevoMensaje) => {
       setMensaje(nuevoMensaje);
-      setTimeout(() => setMensaje({}), 3000); // Limpia el mensaje después de 3 segundos
+      setTimeout(() => setMensaje({}), 3000);
   };
 
-  // Obtener datos del perfil al cargar el componente
+  const handleDescargarPDF = async () => {
+    try {
+      const pdfDoc = await generatePatientProfile(perfil, token); // Cambiado aquí
+      pdfDoc.save(`Historial_Saludify_${perfil.nombre}_${perfil.apellido}.pdf`);
+      mostrarMensaje({ respuesta: 'PDF generado correctamente', tipo: true });
+    } catch (error) {
+      console.error('Error al descargar el PDF:', error);
+      mostrarMensaje({ respuesta: 'Error al generar el PDF', tipo: false });
+    }
+  };
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
@@ -67,7 +76,7 @@ const Perfil = () => {
     obtenerPerfil();
   }, []);
 
-  // Manejar cambios en los campos del formulario
+
   const handlePerfilChange = (e) => {
     const { name, value } = e.target;
     setPerfil({ ...perfil, [name]: value });
@@ -80,12 +89,12 @@ const Perfil = () => {
     validateField(name, value);
   };
 
-  // Manejar selección de imagen
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validar tipo de archivo
+
     const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
     if (!validTypes.includes(file.type)) {
       mostrarMensaje({ respuesta: 'Solo se permiten imágenes JPEG, PNG o GIF', tipo: false });

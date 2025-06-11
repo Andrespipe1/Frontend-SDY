@@ -1,13 +1,28 @@
-import React, { useState } from 'react';
-import { FaClipboardList, FaUtensils } from 'react-icons/fa';
+import React, { useState,useEffect } from 'react';
+import { FaClipboardList, FaUtensils, FaSave } from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
 import ParametrosSalud from './ParametrosSalud';
 import FormularioComidas from './Comidas';
+import { generatePatientReport } from '../components/DescargarPdf';
+import { useAuth } from '../context/AuthProvider';
 
 const Formularios = () => {
   const [activeTab, setActiveTab] = useState('salud');
   const [mensaje, setMensaje] = useState({});
 
+  const { token,user } = useAuth();
+
+  
+  const handleDescargarPDF = async () => {
+    try {
+      const pdfDoc = await generatePatientReport(user, token); // Cambiado aquí
+      pdfDoc.save(`Historial_Saludify_${user.nombre}_${user.apellido}.pdf`);
+      mostrarMensaje({ respuesta: 'PDF generado correctamente', tipo: true });
+    } catch (error) {
+      console.error('Error al descargar el PDF:', error);
+      mostrarMensaje({ respuesta: 'Error al generar el PDF', tipo: false });
+    }
+  };
   const mostrarMensaje = (nuevoMensaje) => {
     setMensaje(nuevoMensaje);
     setTimeout(() => setMensaje({}), 3000);
@@ -58,7 +73,15 @@ const Formularios = () => {
                 <FaUtensils className="mr-1 sm:mr-2" />
                 <span className="whitespace-nowrap">Nutrición</span>
               </button>
+
+
             </div>
+            <button
+              onClick={handleDescargarPDF}
+              className=" align-right mt-6 flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-md"
+            >
+              <FaSave /> Descargar Perfil (PDF)
+            </button>
           </div>
         </div>
 
