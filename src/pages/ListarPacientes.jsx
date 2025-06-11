@@ -70,7 +70,7 @@ const ListarPacientes = () => {
   // Bloquear paciente
   const confirmDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/bloquear-paciente/${idToDelete}`, {
+      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/bloquear-paciente/${idToDelete}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
