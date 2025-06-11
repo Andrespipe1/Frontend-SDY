@@ -69,17 +69,25 @@ const ListarPacientes = () => {
 
   // Bloquear paciente
   const confirmDelete = async () => {
+    if (!token) {
+      mostrarMensaje({
+        respuesta: 'Token no encontrado. Por favor, inicia sesión nuevamente.',
+        tipo: false,
+      });
+      return;
+    }
+  
     try {
-      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/bloquear-paciente/${idToDelete}`, {
+      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/bloquear-paciente/${idToDelete}`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      mostrarMensaje({ respuesta: 'Paciente eliminado correctamente', tipo: true });
+      mostrarMensaje({ respuesta: 'Paciente bloqueado correctamente', tipo: true });
       setPacientes(pacientes.filter((paciente) => paciente._id !== idToDelete));
     } catch (error) {
       mostrarMensaje({
-        respuesta: error.response?.data?.msg || 'Error al eliminar paciente',
+        respuesta: error.response?.data?.msg || 'Error al bloquear paciente',
         tipo: false,
       });
     } finally {
