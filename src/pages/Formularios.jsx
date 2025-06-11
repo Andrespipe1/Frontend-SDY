@@ -80,7 +80,7 @@ const Formularios = () => {
               onClick={handleDescargarPDF}
               className=" align-right mt-6 flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-md"
             >
-              <FaSave /> Descargar Perfil (PDF)
+              <FaSave /> Descargar Historial (PDF)
             </button>
           </div>
         </div>
