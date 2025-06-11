@@ -17,7 +17,7 @@ const LandingPage = () => {
                     </nav>
 
                     <div className='text-center pt-8 md:pt-16'>
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-green-500 to-blue-600 bg-clip-text text-transparent mb-4 md:mb-6 mx-auto max-w-4xl">
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-green-500 to-blue-600 [-webkit-background-clip:text] [background-clip:text] text-transparent mb-4 md:mb-6 mx-auto max-w-4xl" >
                             TRANSFORMA TU SALUD CON TECNOLOGÍA
                         </h2>
 
