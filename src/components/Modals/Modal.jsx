@@ -2,6 +2,8 @@ import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Mensaje from '../Alerts/Mensaje';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const ModalPaciente = ({ 
   paciente, 
@@ -132,11 +134,110 @@ const ModalPaciente = ({
           >
             Ver historial
           </button>
+          <button
+            onClick={handleDescargarPDF}
+            className="px-5 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+          >
+            Descargar PDF
+          </button>
           </div>
         </div>
       </div>
     </div>
   );
+};
+// Función para descargar el historial en PDF
+const handleDescargarPDF = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const pacienteId = paciente._id;
+
+    // Obtener datos del historial
+    const [parametrosRes, comidasRes, recomendacionesRes] = await Promise.all([
+      axios.get(`${import.meta.env.VITE_BACKEND_URL}/paciente/parametro/${pacienteId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      axios.get(`${import.meta.env.VITE_BACKEND_URL}/paciente/comidas/${pacienteId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      axios.get(`${import.meta.env.VITE_BACKEND_URL}/obtener-recomendaciones/${pacienteId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ]);
+
+    const parametros = parametrosRes.data.parametros || [];
+    const comidas = comidasRes.data.comidas || [];
+    const recomendaciones = recomendacionesRes.data.recomendaciones || [];
+
+    // Crear el PDF
+    const doc = new jsPDF();
+
+    // Título
+    doc.setFontSize(18);
+    doc.text(`Historial del Paciente: ${paciente.nombre} ${paciente.apellido}`, 10, 10);
+
+    // Parámetros
+    doc.setFontSize(14);
+    doc.text('Parámetros:', 10, 20);
+    if (parametros.length > 0) {
+      const parametrosData = parametros.map((p) => [
+        new Date(p.createdAt).toLocaleDateString(),
+        `${p.peso} kg`,
+        `${p.estatura} cm`,
+        p.nivelActividadFisica,
+        p.enfermedad || 'N/A',
+        p.discapacidad || 'N/A',
+      ]);
+      doc.autoTable({
+        head: [['Fecha', 'Peso', 'Estatura', 'Actividad Física', 'Enfermedad', 'Discapacidad']],
+        body: parametrosData,
+        startY: 25,
+      });
+    } else {
+      doc.text('No hay parámetros registrados.', 10, 25);
+    }
+
+    // Comidas
+    doc.setFontSize(14);
+    doc.text('Comidas:', 10, doc.lastAutoTable.finalY + 10);
+    if (comidas.length > 0) {
+      const comidasData = comidas.map((c) => [
+        new Date(c.createdAt).toLocaleDateString(),
+        c.tipoComida,
+        c.descripcion,
+      ]);
+      doc.autoTable({
+        head: [['Fecha', 'Tipo de Comida', 'Descripción']],
+        body: comidasData,
+        startY: doc.lastAutoTable.finalY + 15,
+      });
+    } else {
+      doc.text('No hay comidas registradas.', 10, doc.lastAutoTable.finalY + 15);
+    }
+
+    // Recomendaciones
+    doc.setFontSize(14);
+    doc.text('Recomendaciones:', 10, doc.lastAutoTable.finalY + 10);
+    if (recomendaciones.length > 0) {
+      const recomendacionesData = recomendaciones.map((r) => [
+        new Date(r.createdAt).toLocaleDateString(),
+        r.tipo,
+        r.contenido,
+      ]);
+      doc.autoTable({
+        head: [['Fecha', 'Tipo', 'Contenido']],
+        body: recomendacionesData,
+        startY: doc.lastAutoTable.finalY + 15,
+      });
+    } else {
+      doc.text('No hay recomendaciones registradas.', 10, doc.lastAutoTable.finalY + 15);
+    }
+
+    // Descargar el PDF
+    doc.save(`historial_${paciente.nombre}_${paciente.apellido}.pdf`);
+  } catch (error) {
+    console.error('Error al descargar el PDF:', error);
+  }
 };
 
 export default ModalPaciente;
