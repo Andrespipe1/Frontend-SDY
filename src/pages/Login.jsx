@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Mensaje from "../components/Alerts/Mensaje";
 import axios from "axios";
@@ -9,19 +9,40 @@ import { useAuth } from "../context/AuthProvider";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); // Correctamente colocado aquí
+  const { login } = useAuth();
   const [mensaje, setMensaje] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({  
+  const [attempts, setAttempts] = useState(0);
+  const [lockoutTime, setLockoutTime] = useState(0);
+  const [form, setForm] = useState({
     email: "",
     password: ""
   });
+
+  // Efecto para manejar el tiempo de bloqueo
+  useEffect(() => {
+    if (lockoutTime > 0) {
+      const timer = setInterval(() => {
+        setLockoutTime(prev => prev - 1);
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [lockoutTime]);
+
   const handleChange = (e) => {
+    // Sanitización básica de inputs
+    const value = e.target.value.trim();
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]: value
     });
+  };
+
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const togglePasswordVisibility = () => {
@@ -30,56 +51,82 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    
-    if (!form.email || !form.password) {
-      setMensaje({ respuesta: "Todos los campos son obligatorios", tipo: false });
-      setLoading(false);
+
+    // Verificar si el usuario está bloqueado
+    if (lockoutTime > 0) {
+      setMensaje({
+        respuesta: `Demasiados intentos. Intente nuevamente en ${lockoutTime} segundos`,
+        tipo: false
+      });
       return;
     }
-  
+
+    // Validaciones
+    if (!form.email || !form.password) {
+      setMensaje({ respuesta: "Todos los campos son obligatorios", tipo: false });
+      return;
+    }
+
+    if (!validateEmail(form.email)) {
+      setMensaje({ respuesta: "Por favor, ingrese un email válido", tipo: false });
+      return;
+    }
+
+    setLoading(true);
+
     try {
       const url = `${import.meta.env.VITE_BACKEND_URL}/login`;
-      const { data } = await axios.post(url, form);
-      
+      const { data } = await axios.post(url, form, {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        timeout: 5000 // Timeout de 5 segundos
+      });
+
       if (!data.token || !data.user) {
         throw new Error("Respuesta inválida del servidor");
       }
-    
-      // Guardar información en formato consistente con el backend
+
+      // Resetear intentos fallidos después de un login exitoso
+      setAttempts(0);
+
       const userData = {
         _id: data.user._id,
         nombre: data.user.nombre,
         apellido: data.user.apellido,
         email: data.user.email,
         rol: data.user.rol,
-        // otros campos según necesites
         ...(data.user.edad && { edad: data.user.edad }),
         ...(data.user.direccion && { direccion: data.user.direccion }),
         ...(data.user.celular && { celular: data.user.celular })
       };
-  
-      // Usar el AuthProvider para hacer login
+
       login(userData, data.token);
-      
-      // Redirigir según el rol
       navigate(data.user.rol === "nutricionista" ? "/dashboard_Nutri" : "/dashboard");
-      
+
     } catch (error) {
       console.error("Error en login:", error);
-      
-      // Manejo de errores específicos
-      let errorMsg = "Ocurrió un error al iniciar sesión";
-      if (error.response) {
-        // Error de respuesta del servidor
-        errorMsg = error.response.data?.msg || errorMsg;
-      } else if (error.request) {
-        // Error de conexión
-        errorMsg = "No se pudo conectar al servidor";
+
+      // Incrementar intentos fallidos
+      setAttempts(prev => prev + 1);
+
+      // Implementar bloqueo después de 3 intentos fallidos
+      if (attempts >= 2) {
+        setLockoutTime(30); // Bloquear por 30 segundos
+        setMensaje({
+          respuesta: "Demasiados intentos fallidos. Cuenta bloqueada por 30 segundos",
+          tipo: false
+        });
+      } else {
+        let errorMsg = "Ocurrió un error al iniciar sesión";
+        if (error.response) {
+          errorMsg = error.response.data?.msg || errorMsg;
+        } else if (error.request) {
+          errorMsg = "No se pudo conectar al servidor";
+        }
+        setMensaje({ respuesta: errorMsg, tipo: false });
       }
-      
-      setMensaje({ respuesta: errorMsg, tipo: false });
-      setTimeout(() => setMensaje({}), 3000);
     } finally {
       setLoading(false);
     }
@@ -91,7 +138,7 @@ const Login = () => {
       <Link to="/" className="absolute top-6 left-6 p-2 bg-gradient-to-r from-green-400 to-blue-600 text-white rounded-full hover:bg-green-700">
         <FaHome size={24} />
       </Link>
-      
+
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
         {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
         <img
