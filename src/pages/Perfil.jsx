@@ -234,78 +234,99 @@ const Perfil = () => {
           </div>
         )}
 
-        <h1 className="text-3xl font-extrabold text-gray-900 text-center">Mi Perfil</h1>
-        <p className="mt-2 text-lg text-gray-600 text-center">Administra tu información personal y seguridad</p>
-
-        {/* Sección de Avatar */}
-        <div className="flex flex-col items-center mb-2 mt-4">
-          <div className="relative group mb-4">
-            <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200 flex items-center justify-center">
-              {perfil.avatar || previewImage ? (
-                <img
-                  src={previewImage || perfil.avatar}
-                  alt="Avatar"
-                  className="w-full h-full object-cover"
-                  onError={(e) => (e.target.src = '/default-avatar.png')}
-                />
-              ) : (
-                <div className="flex-shrink-0 h-full w-full rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white font-bold text-4xl">
-                  {perfil.nombre?.charAt(0)?.toUpperCase() || ''}
-                  {perfil.apellido?.charAt(0)?.toUpperCase() || ''}
-                </div>
-              )}
-            </div>
-            <label
-              htmlFor="avatar-upload"
-              className="absolute bottom-3 right-3 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition-all shadow-md transform hover:scale-110"
-              title="Cambiar foto de perfil"
-            >
-              <FaCamera className="text-lg" />
-              <input
-                id="avatar-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-            </label>
-          </div>
-
-          {previewImage && (
-            <div className="flex gap-4">
-              <button
-                onClick={handleUploadAvatar}
-                disabled={isUploading}
-                className={`flex items-center gap-2 px-6 py-2 rounded-lg text-white ${
-                  isUploading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
-                } transition-colors shadow-md`}
-              >
-                {isUploading ? (
-                  <>
-                    <FaSpinner className="animate-spin" />
-                    Subiendo...
-                  </>
+        {/* Tarjeta principal */}
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          {/* Sección superior con avatar */}
+          <div className=" p-6 md:p-4 flex flex-col md:flex-row items-center">
+            {/* Avatar */}
+            <div className="relative group mb-3 md:mb-0 md:mr-8">
+              <div className="w-38 h-38 rounded-full overflow-hidden border-4 border-white shadow-xl bg-gray-200 flex items-center justify-center">
+                {perfil.avatar || previewImage ? (
+                  <img
+                    src={previewImage || perfil.avatar}
+                    alt="Avatar"
+                    className="w-full h-full object-cover"
+                    onError={(e) => (e.target.src = '/default-avatar.png')}
+                  />
                 ) : (
-                  <>
-                    <FaSave /> Guardar Avatar
-                  </>
+                  <div className="flex-shrink-0 h-full w-full rounded-full bg-gradient-to-r from-blue-500 to-green-500 flex items-center justify-center text-white font-bold text-4xl">
+                    {perfil.nombre?.charAt(0)?.toUpperCase() || ''}
+                    {perfil.apellido?.charAt(0)?.toUpperCase() || ''}
+                  </div>
                 )}
-              </button>
-              <button
-                onClick={() => {
-                  setPreviewImage('');
-                  setSelectedImage(null);
-                }}
-                className="flex items-center gap-2 px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors shadow-md"
+              </div>
+              <label
+                htmlFor="avatar-upload"
+                className="absolute bottom-2 right-2 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition-all shadow-md transform hover:scale-110"
+                title="Cambiar foto de perfil"
               >
-                Cancelar
-              </button>
+                <FaCamera className="text-lg" />
+                <input
+                  id="avatar-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
             </div>
-          )}
-        </div>
 
+            {/* Información básica */}
+            <div className="text-center md:text-left flex-1">
+              <h2 className="text-2xl font-bold text-gray-800">
+                {perfil.nombre} {perfil.apellido}
+              </h2>
+              <p className="text-gray-600 mt-1">{perfil.email}</p>
+              
+              <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-3">
+                <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm flex items-center">
+                  <FaUser className="mr-1" /> Paciente
+                </div>
+                <div className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm flex items-center">
+                  <FaPhone className="mr-1" /> {perfil.celular || 'Sin teléfono'}
+                </div>
+                <div className="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-sm flex items-center">
+                  <FaBirthdayCake className="mr-1" /> {perfil.edad || '0'} años
+                </div>
+              </div>
+               {/* Avatar upload section */}
+                  {previewImage && (
+                    <div className="flex gap-4 mt-6">
+                      <button
+                        onClick={handleUploadAvatar}
+                        disabled={isUploading}
+                        className={`flex items-center gap-2 px-6 py-2 rounded-lg text-white ${
+                          isUploading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+                        } transition-colors shadow-md`}
+                      >
+                        {isUploading ? (
+                          <>
+                            <FaSpinner className="animate-spin" />
+                            Subiendo...
+                          </>
+                        ) : (
+                          <>
+                            <FaSave /> Guardar Avatar
+                          </>
+                        )}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setPreviewImage('');
+                          setSelectedImage(null);
+                        }}
+                        className="flex items-center gap-2 px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors shadow-md"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  )}
+            </div>
+            
+          </div>
+        </div>
         {/* Contenido principal */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
           {/* Formulario de información personal */}
           <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
             <div className="flex items-center mb-6">

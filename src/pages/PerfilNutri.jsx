@@ -163,13 +163,48 @@ const PerfilNutri = () => {
       </div>
 
       {/* Contenedor principal */}
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-extrabold text-gray-900">Mi Perfil</h1>
-          <p className="mt-2 text-lg text-gray-600">Administra tu información personal y seguridad</p>
-        </div>
+        {/* Tarjeta principal */}
+        <div>
+          {/* Sección superior con avatar */}
+          <div className=" p-6 md:p-4 flex flex-col md:flex-row items-center">
+            {/* Avatar */}
+            <div className="relative group mb-3 md:mb-0 md:mr-8">
+              <div className="w-38 h-38 rounded-full overflow-hidden border-4 border-white shadow-xl bg-gray-200 flex items-center justify-center">
+ 
+                  <div className="flex-shrink-0 h-full w-full rounded-full bg-gradient-to-r from-blue-500 to-green-500 flex items-center justify-center text-white font-bold text-4xl">
+                    {perfil.nombre?.charAt(0)?.toUpperCase() || ''}
+                    {perfil.apellido?.charAt(0)?.toUpperCase() || ''}
+                  </div>
+                
+              </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            </div>
+
+            {/* Información básica */}
+            <div className="text-center md:text-left flex-1">
+              <h2 className="text-2xl font-bold text-gray-800">
+                {perfil.nombre} {perfil.apellido}  -  Nutricionista
+              </h2>
+
+              <p className="text-gray-600 mt-1">{perfil.email}</p>
+              
+              <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-3">
+                <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm flex items-center">
+                  <FaUser className="mr-1" /> Paciente
+                </div>
+                <div className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm flex items-center">
+                  <FaPhone className="mr-1" /> {perfil.celular || 'Sin teléfono'}
+                </div>
+                <div className="bg-purple-50 text-purple-700 px-3 py-1 rounded-full text-sm flex items-center">
+                  <FaBirthdayCake className="mr-1" /> {perfil.edad || '0'} años
+                </div>
+              </div>
+
+            </div>
+            
+          </div>
+  
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
           <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-200">
                       <div className="flex items-center mb-6">
                         <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
