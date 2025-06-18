@@ -178,7 +178,7 @@ const Perfil = () => {
   // Validaciones
   const validateField = (name, value) => {
     const newErrors = { ...errors };
-    
+  
     switch (name) {
       case 'edad':
         newErrors.edad = value < 0 || value > 100 ? 'La edad debe estar entre 0 y 100 años' : '';
@@ -187,14 +187,31 @@ const Perfil = () => {
         newErrors.celular = !/^\d*$/.test(value) ? 'Solo se permiten números' : '';
         break;
       case 'passwordnuevo':
-        newErrors.password = value && value.length < 6 ? 'La contraseña debe tener al menos 6 caracteres' : '';
+        const passwordErrors = [];
+        if (value.length < 8) {
+          passwordErrors.push("Mínimo 8 caracteres");
+        }
+        if (!/[A-Z]/.test(value)) {
+          passwordErrors.push("Al menos una mayúscula");
+        }
+        if (!/[a-z]/.test(value)) {
+          passwordErrors.push("Al menos una minúscula");
+        }
+        if (!/[0-9]/.test(value)) {
+          passwordErrors.push("Al menos un número");
+        }
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+          passwordErrors.push("Al menos un carácter especial (!@#$%^&*.)");
+        }
+        newErrors.password = passwordErrors.length > 0 ? `La contraseña debe tener: ${passwordErrors.join(", ")}` : '';
         break;
       default:
         break;
     }
-    
+  
     setErrors(newErrors);
   };
+    
 
   const togglePasswordVisibility = (field) => {
     setShowPassword(prev => ({ ...prev, [field]: !prev[field] }));

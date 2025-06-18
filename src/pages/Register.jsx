@@ -149,7 +149,15 @@ const Register = () => {
             setMensaje({ respuesta: respuesta.data.msg, tipo: true });
             setform({});
         } catch (error) {
-            setMensaje({ respuesta: error.response?.data?.msg || "Error al registrar", tipo: false });
+            const serverErrors = error.response?.data?.errors;
+            if (serverErrors && Array.isArray(serverErrors)) {
+                // Extraer los mensajes de error del array
+                const errorMessages = serverErrors.map(err => err.msg).join(". ");
+                setMensaje({ respuesta: errorMessages, tipo: false });
+            } else {
+                // Manejo de errores genéricos
+                setMensaje({ respuesta: error.response?.data?.msg || "Error al registrar", tipo: false });
+            }
         } finally {
             setLoading(false); // Habilitar el botón nuevamente
         }

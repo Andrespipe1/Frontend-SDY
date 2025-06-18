@@ -15,6 +15,26 @@ const RestablecerPassword = () => {
     confirmpassword: ''
   });
 
+  const validatePassword = (password) => {
+    const errors = [];
+    if (password.length < 8) {
+      errors.push("Mínimo 8 caracteres");
+    }
+    if (!/[A-Z]/.test(password)) {
+      errors.push("Al menos una mayúscula");
+    }
+    if (!/[a-z]/.test(password)) {
+      errors.push("Al menos una minúscula");
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.push("Al menos un número");
+    }
+    if (!/[!@#$%^&*]/.test(password)) {
+      errors.push("Al menos un carácter especial (!@#$%^&*)");
+    }
+    return errors;
+  };
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -35,8 +55,20 @@ const RestablecerPassword = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const errors = validatePassword(form.password);
+    if (errors.length > 0) {
+      setMensaje({ respuesta: `La contraseña debe tener: ${errors.join(", ")}`, tipo: false });
+      return;
+    }
+
+    if (form.password !== form.confirmpassword) {
+      setMensaje({ respuesta: "Las contraseñas no coinciden", tipo: false });
+      return;
+    }
+
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}/nuevo-password/${token}`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/recuperar-password/${token}`;
       const respuesta = await axios.post(url, form);
       setMensaje({ respuesta: respuesta.data.msg, tipo: true });
       setForm({ password: '', confirmpassword: '' });
