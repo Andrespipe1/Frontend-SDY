@@ -39,7 +39,7 @@ const PerfilNutri = () => {
         setPerfil(data);
       } catch (error) {
         mostrarMensaje({ respuesta: 'Error al obtener el perfil', tipo: false });
-      }finally {
+      } finally {
         setLoading(false);
       }
     };
@@ -48,15 +48,15 @@ const PerfilNutri = () => {
   }, []);
 
   const handlePerfilChange = (e) => {
-    setPerfil({ ...perfil, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setPerfil({ ...perfil, [name]: value });
     validateField(name, value);
-
   };
 
   const handlePasswordChange = (e) => {
-    setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setPasswordForm({ ...passwordForm, [name]: value });
     validateField(name, value);
-
   };
 
   const handleActualizarPerfil = async (e) => {
@@ -94,6 +94,7 @@ const PerfilNutri = () => {
       setPasswordForm({ passwordactual: '', passwordnuevo: '' });
     }
   };
+
   const [errors, setErrors] = useState({
     edad: '',
     celular: '',
@@ -144,8 +145,6 @@ const PerfilNutri = () => {
   const togglePasswordVisibility = (field) => {
     setShowPassword({ ...showPassword, [field]: !showPassword[field] });
   };
-
-
   return (
     loading ? (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
