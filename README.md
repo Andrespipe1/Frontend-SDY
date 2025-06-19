@@ -30,8 +30,6 @@
 - [📊 API Endpoints](#-api-endpoints)
 - [🔒 Seguridad](#-seguridad)
 - [📈 Roadmap](#-roadmap)
-- [🤝 Contribución](#-contribución)
-- [📄 Licencia](#-licencia)
 - [👨‍💻 Autores](#-autores)
 
 ---
@@ -229,18 +227,15 @@ Crear un archivo `.env` en la raíz del proyecto:
 
 ```env
 # Backend API
-VITE_BACKEND_URL=http://localhost:3000/api
-VITE_BACKEND_API=http://localhost:3000
+VITE_BACKEND_URL= ******************
+VITE_BACKEND_API= ******************
 
-# Configuración de la aplicación
-VITE_APP_NAME=SALUDIFY
-VITE_APP_VERSION=1.0.0
 
 # Configuración de Socket.io (opcional)
-VITE_SOCKET_URL=http://localhost:3000
+VITE_SOCKET_URL= ******************
 
 # Configuración de producción
-VITE_PRODUCTION_URL=https://tu-dominio.com
+VITE_PRODUCTION_URL= ******************
 ```
 
 ---
@@ -392,18 +387,6 @@ src/
 
 ---
 
-## 🤝 Contribución
-
-¡Las contribuciones son bienvenidas! Por favor, lee nuestras guías de contribución:
-
-### Cómo Contribuir
-
-1. **Fork** el proyecto
-2. **Crea** una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** a la rama (`git push origin feature/AmazingFeature`)
-5. **Abre** un Pull Request
-
 ### Estándares de Código
 
 - **ESLint** configurado para mantener calidad
@@ -413,30 +396,26 @@ src/
 
 ---
 
-## 📄 Licencia
-
-Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
-
----
-
 ## 👨‍💻 Autores
 
 ### Desarrolladores Principales
 
 <table>
   <tr>
+    #Frontend
     <td align="center">
-      <a href="https://github.com/tu-usuario">
-        <img src="https://avatars.githubusercontent.com/tu-usuario" width="100px;" alt=""/>
+      <a href="https://github.com/Andrespipe1">
+        <img src="https://avatars.githubusercontent.com/Andrespipe1" width="100px;" alt=""/>
         <br />
         <sub><b>Andrés Felipe Tufiño Muñoz</b></sub>
       </a>
       <br />
       <sub>Full Stack Developer</sub>
     </td>
+    #Backend
     <td align="center">
-      <a href="https://github.com/tu-usuario">
-        <img src="https://avatars.githubusercontent.com/tu-usuario" width="100px;" alt=""/>
+      <a href="https://github.com/Wilmer-Vnr">
+        <img src="https://avatars.githubusercontent.com/Wilmer_Vnr" width="100px;" alt=""/>
         <br />
         <sub><b>Wilmer David Vargas Nilve</b></sub>
       </a>
@@ -448,8 +427,8 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 
 ### Contacto
 
-- 📧 **Email**: contacto@saludify.com
-- 🌐 **Website**: https://saludify.com
+- 📧 **Email**: andresftma@gmail.com
+- 🌐 **Website**: https://frontendsdy.vercel.app
 - 📱 **LinkedIn**: [Perfil LinkedIn](#)
 
 ---
@@ -458,8 +437,8 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 
 **¿Te gustó el proyecto? ¡Dale una ⭐!**
 
-[![GitHub stars](https://img.shields.io/github/stars/tu-usuario/saludify?style=social)](https://github.com/tu-usuario/saludify)
-[![GitHub forks](https://img.shields.io/github/forks/tu-usuario/saludify?style=social)](https://github.com/tu-usuario/saludify)
+[![GitHub stars](https://img.shields.io/github/stars/Andrespipe1/FRONTEND-SDY?style=social)](https://github.com/tu-usuario/saludify)
+[![GitHub forks](https://img.shields.io/github/forks/Andrespipe1/FRONTEND-SDY?style=social)](https://github.com/Andrespipe1/FRONTEND-SDY)
 
 *Construido con ❤️ para mejorar la salud digital*
 
