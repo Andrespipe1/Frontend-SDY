@@ -74,7 +74,6 @@ const Citas = () => {
 
         obtenerCitas(role, perfilResponse.data._id);
       } catch (error) {
-        console.error('Error al obtener datos iniciales:', error);
         mostrarMensaje({
           respuesta: error.response?.data?.msg || 'Error al cargar datos del perfil',
           tipo: false
@@ -105,21 +104,62 @@ const Citas = () => {
       });
 
       // Depuración temporal: mostrar las fechas recibidas
-      console.log('Citas recibidas del backend:', data);
-      if (Array.isArray(data)) {
-        data.forEach((cita, index) => {
-          console.log(`Cita ${index + 1}:`, {
-            id: cita._id,
-            fechaOriginal: cita.fecha,
-            fechaFormateada: formatFecha(cita.fecha),
-            fechaLocal: new Date(cita.fecha).toLocaleString()
-          });
-        });
-      }
 
-      setCitas(Array.isArray(data) ? data : []);
+      if (Array.isArray(data)) {
+        // Obtener datos completos de los usuarios para cada cita
+        const citasConDatosCompletos = await Promise.all(
+          data.map(async (cita) => {
+            try {
+              // Obtener datos completos del paciente
+              let pacienteCompleto = cita.paciente;
+              if (cita.paciente?._id) {
+                try {
+                  const { data: pacienteData } = await axios.get(
+                    `${import.meta.env.VITE_BACKEND_URL}/listar-pacientes/${cita.paciente._id}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                  );
+                  if (pacienteData?.paciente) {
+                    pacienteCompleto = pacienteData.paciente;
+                  }
+                } catch (error) {
+                  console.warn('Error al obtener datos completos del paciente:', error);
+                }
+              }
+
+              // Obtener datos completos del nutricionista
+              let nutricionistaCompleto = cita.nutricionista;
+              if (cita.nutricionista?._id) {
+                try {
+                  const { data: nutriData } = await axios.get(
+                    `${import.meta.env.VITE_BACKEND_URL}/perfilNutri/${cita.nutricionista._id}`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                  );
+                  if (nutriData) {
+                    nutricionistaCompleto = nutriData;
+                  }
+                } catch (error) {
+                  console.warn('Error al obtener datos completos del nutricionista:', error);
+                }
+              }
+
+              return {
+                ...cita,
+                paciente: pacienteCompleto,
+                nutricionista: nutricionistaCompleto
+              };
+            } catch (error) {
+              console.warn('Error al procesar cita:', error);
+              return cita;
+            }
+          })
+        );
+
+
+        setCitas(citasConDatosCompletos);
+      } else {
+        setCitas([]);
+      }
     } catch (error) {
-      console.error('Error al obtener citas:', error);
       mostrarMensaje({
         respuesta: error.response?.data?.msg || 'Error al obtener citas',
         tipo: false
@@ -600,7 +640,36 @@ const Citas = () => {
                     <tr key={cita._id}>
                       <td className="px-6 py-6 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white font-bold">
+                          {userRole === 'paciente' ? (
+                            // Avatar del nutricionista
+                            cita.nutricionista?.avatar ? (
+                              <img
+                                src={cita.nutricionista.avatar}
+                                alt={`${cita.nutricionista?.nombre || 'Nutricionista'} ${cita.nutricionista?.apellido || ''}`}
+                                className="w-10 h-10 rounded-full object-cover"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                  e.target.nextSibling.style.display = 'flex';
+                                }}
+                              />
+                            ) : null
+                          ) : (
+                            // Avatar del paciente
+                            cita.paciente?.avatar ? (
+                              <img
+                                src={cita.paciente.avatar}
+                                alt={`${cita.paciente?.nombre || 'Paciente'} ${cita.paciente?.apellido || ''}`}
+                                className="w-10 h-10 rounded-full object-cover"
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                  e.target.nextSibling.style.display = 'flex';
+                                }}
+                              />
+                            ) : null
+                          )}
+                          <div className={`flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white font-bold ${(userRole === 'paciente' && cita.nutricionista?.avatar) ||
+                            (userRole === 'nutricionista' && cita.paciente?.avatar) ? 'hidden' : ''
+                            }`}>
                             {userRole === 'paciente'
                               ? `${cita.nutricionista?.nombre?.charAt(0) || 'N'}${cita.nutricionista?.apellido?.charAt(0) || 'A'}`
                               : `${cita.paciente?.nombre?.charAt(0) || 'P'}${cita.paciente?.apellido?.charAt(0) || 'A'}`}
