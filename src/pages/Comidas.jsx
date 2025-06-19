@@ -69,9 +69,30 @@ const FormularioComidas = () => {
   
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+  
+    // Validar que la entrada contenga al menos una letra
+    const regexLetras = /[a-zA-ZáéíóúÁÉÍÓÚñÑ]/;
+    const totalCaracteres = value.length;
+    const totalNumeros = (value.match(/\d/g) || []).length;
+    const porcentajeNumeros = (totalNumeros / totalCaracteres) * 100;
+  
+    let errorMessage = '';
+  
+    if (!regexLetras.test(value)) {
+      errorMessage = 'La descripción debe contener al menos una letra.';
+    } else if (porcentajeNumeros > 50) {
+      errorMessage = 'La descripción no puede ser mayoritariamente números.';
+    }
+  
+    setMensaje({
+      ...mensaje,
+      [name]: errorMessage,
+    });
+  
     setComidasInput({
       ...comidasInput,
-      [e.target.name]: e.target.value
+      [name]: value,
     });
   };
 
@@ -82,6 +103,29 @@ const FormularioComidas = () => {
     if (!descripcion || descripcion.length < 10 || descripcion.length > 200) {
       mostrarMensaje({
         respuesta: 'La descripción debe tener entre 10 y 200 caracteres.',
+        tipo: false,
+      });
+      return;
+    }
+  
+    // Validar que la descripción contenga al menos una letra
+    const regexLetras = /[a-zA-ZáéíóúÁÉÍÓÚñÑ]/; // Verifica que haya al menos una letra
+    if (!regexLetras.test(descripcion)) {
+      mostrarMensaje({
+        respuesta: 'La descripción debe contener al menos una letra.',
+        tipo: false,
+      });
+      return;
+    }
+  
+    // Validar que la descripción no sea mayoritariamente números
+    const totalCaracteres = descripcion.length;
+    const totalNumeros = (descripcion.match(/\d/g) || []).length;
+    const porcentajeNumeros = (totalNumeros / totalCaracteres) * 100;
+  
+    if (porcentajeNumeros > 50) { // Si más del 50% son números, no se permite
+      mostrarMensaje({
+        respuesta: 'La descripción no puede ser mayoritariamente números.',
         tipo: false,
       });
       return;
@@ -239,25 +283,25 @@ const comidasFiltradas = apiResponse.comidas.filter(comida => {
       name: 'desayuno',
       label: 'Desayuno',
       icon: <FaCoffee className="text-amber-500" />,
-      placeholder: 'Ej: Café con leche, tostadas integrales con aguacate...'
+      placeholder: 'Ej: 1 Café con leche, 3 tostadas integrales con aguacate...'
     },
     {
       name: 'almuerzo',
       label: 'Almuerzo',
       icon: <FaUtensils className="text-blue-500" />,
-      placeholder: 'Ej: Pechuga a la plancha con arroz integral y ensalada...'
+      placeholder: 'Ej: Una Pechuga a la plancha con 200 g arroz integral y 200g ensalada...'
     },
     {
       name: 'cena',
       label: 'Cena',
       icon: <FaHamburger className="text-purple-500" />,
-      placeholder: 'Ej: Crema de calabaza, filete de merluza con espárragos...'
+      placeholder: 'Ej: Crema de calabaza, 1 filete de merluza con espárragos...'
     },
     {
       name: 'snack',
       label: 'Snacks',
       icon: <FaIceCream className="text-pink-500" />,
-      placeholder: 'Ej: Frutos secos, yogur griego con frutas...'
+      placeholder: 'Ej: 50g Frutos secos, 400g yogur griego con frutas...'
     }
   ];
 
@@ -280,6 +324,9 @@ const comidasFiltradas = apiResponse.comidas.filter(comida => {
               - {apiResponse.paciente.nombre} {apiResponse.paciente.apellido}
             </span>
           )}
+        </h3>
+        <h3 className='text-gray-500 mb-6'>
+          Registra tus comidas del día (Para mejores analisis ingresa con porciones)
         </h3>
         
         <div className="space-y-6">
@@ -329,15 +376,19 @@ const comidasFiltradas = apiResponse.comidas.filter(comida => {
                 <>
                   <textarea
                     name={comida.name}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                      mensaje[comida.name] ? 'border-red-500' : 'border-gray-300'
+                    }`}
                     rows="3"
                     value={comidasInput[comida.name]}
                     onChange={handleChange}
-                    onKeyPress={permitirSoloTexto}
                     placeholder={comida.placeholder}
                   />
+                  {mensaje[comida.name] && (
+                    <p className="text-red-500 text-xs mt-1">{mensaje[comida.name]}</p>
+                  )}
                   <div className="flex justify-end mt-1">
-                    <button 
+                    <button
                       type="button"
                       className="text-xs flex items-center text-blue-600 hover:text-blue-800"
                       onClick={() => handleSubmitComida(comida.name)}

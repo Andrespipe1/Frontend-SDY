@@ -183,14 +183,14 @@ const PerfilNutri = () => {
             {/* Información básica */}
             <div className="text-center md:text-left flex-1">
               <h2 className="text-2xl font-bold text-gray-800">
-                {perfil.nombre} {perfil.apellido}  -  Nutricionista
+                {perfil.nombre} {perfil.apellido} 
               </h2>
 
               <p className="text-gray-600 mt-1">{perfil.email}</p>
               
               <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-3">
                 <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm flex items-center">
-                  <FaUser className="mr-1" /> Paciente
+                  <FaUser className="mr-1" /> Nutricionista
                 </div>
                 <div className="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm flex items-center">
                   <FaPhone className="mr-1" /> {perfil.celular || 'Sin teléfono'}
