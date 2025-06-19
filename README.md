@@ -9,7 +9,7 @@
 
 **Sistema de monitoreo de salud integral para nutricionistas y pacientes**
 
-[🚀 Demo en Vivo](#) • [📖 Documentación](#) • [🐛 Reportar Bug](#) • [💡 Solicitar Feature](#)
+
 
 </div>
 

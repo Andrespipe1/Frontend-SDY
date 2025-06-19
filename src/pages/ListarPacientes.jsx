@@ -76,13 +76,24 @@ const ListarPacientes = () => {
     }
   
     try {
-      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/bloquear-paciente/${idToDelete}`, {}, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const { data } = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/bloquear-paciente/${idToDelete}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
       mostrarMensaje({ respuesta: 'Paciente bloqueado correctamente', tipo: true });
-      setPacientes(pacientes.filter((paciente) => paciente._id !== idToDelete));
+  
+      // Actualizar el estado del paciente en la lista
+      setPacientes((prevPacientes) =>
+        prevPacientes.map((paciente) =>
+          paciente._id === idToDelete ? { ...paciente, status: false } : paciente
+        )
+      );
     } catch (error) {
       mostrarMensaje({
         respuesta: error.response?.data?.msg || 'Error al bloquear paciente',
