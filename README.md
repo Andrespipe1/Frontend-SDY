@@ -437,7 +437,7 @@ src/
 
 **¿Te gustó el proyecto? ¡Dale una ⭐!**
 
-[![GitHub stars](https://img.shields.io/github/stars/Andrespipe1/FRONTEND-SDY?style=social)](https://github.com/tu-usuario/saludify)
+[![GitHub stars](https://img.shields.io/github/stars/Andrespipe1/FRONTEND-SDY?style=social)](https://github.com/Andrespipe1/FRONTEND-SDY)
 [![GitHub forks](https://img.shields.io/github/forks/Andrespipe1/FRONTEND-SDY?style=social)](https://github.com/Andrespipe1/FRONTEND-SDY)
 
 *Construido con ❤️ para mejorar la salud digital*
