@@ -369,7 +369,7 @@ const Citas = () => {
     ) : (
 
 
-      <div className="min-h-full px-6 py-2 lg:px-8">
+      <div className="min-h-screen px-6 py-2 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
           {Object.keys(mensaje).length > 0 && (
             <div className="mb-6">
@@ -582,7 +582,7 @@ const Citas = () => {
               {searchTerm ? 'No se encontraron citas con ese criterio' : 'No hay citas registradas'}
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto py-4">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -598,7 +598,7 @@ const Citas = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredCitas.map((cita) => (
                     <tr key={cita._id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-6 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white font-bold">
                             {userRole === 'paciente'
@@ -615,10 +615,10 @@ const Citas = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-6">
                         <div className="text-sm text-gray-900 max-w-xs truncate">{cita.descripcion}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-6 whitespace-nowrap">
                         <div className="text-sm text-gray-900 flex flex-col gap-1">
                           <div className="flex items-center gap-1">
                             <FaClock className="text-green-600" />
@@ -642,7 +642,7 @@ const Citas = () => {
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-6 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full capitalize ${cita.estado === 'confirmada' ? 'bg-green-100 text-green-800' :
                           cita.estado === 'cancelada' ? 'bg-red-100 text-red-800' :
                             cita.estado === 'completada' ? 'bg-blue-100 text-blue-800' :
@@ -651,7 +651,7 @@ const Citas = () => {
                           {cita.estado}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <td className="px-6 py-6 whitespace-nowrap text-sm font-medium">
                         {userRole === 'nutricionista' && cita.estado === 'pendiente' && (
                           <button
                             onClick={() => setCitaAConfirmar(cita)}
