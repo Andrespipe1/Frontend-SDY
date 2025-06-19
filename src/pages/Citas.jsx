@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaCalendarAlt, FaClock, FaTrash, FaCheck, FaTimes, FaSearch, FaVideo } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaTrash, FaCheck, FaTimes, FaSearch, FaVideo, FaMapMarkerAlt } from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
 import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
 import { jwtDecode } from 'jwt-decode';
+import { set } from 'react-hook-form';
 const Citas = () => {
   const [citas, setCitas] = useState([]);
   const [modalidad, setModalidad] = useState('presencial');
@@ -18,6 +19,7 @@ const Citas = () => {
   const [userId, setUserId] = useState('');
   const [fechaConfirmacion, setFechaConfirmacion] = useState('');
   const [linkReunion, setLinkReunion] = useState('');
+  const [lugar, setLugar] = useState('');
   const [citaAConfirmar, setCitaAConfirmar] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
@@ -101,6 +103,20 @@ const Citas = () => {
       const { data } = await axios.get(endpoint, {
         headers: { Authorization: `Bearer ${token}` }
       });
+
+      // Depuración temporal: mostrar las fechas recibidas
+      console.log('Citas recibidas del backend:', data);
+      if (Array.isArray(data)) {
+        data.forEach((cita, index) => {
+          console.log(`Cita ${index + 1}:`, {
+            id: cita._id,
+            fechaOriginal: cita.fecha,
+            fechaFormateada: formatFecha(cita.fecha),
+            fechaLocal: new Date(cita.fecha).toLocaleString()
+          });
+        });
+      }
+
       setCitas(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error al obtener citas:', error);
@@ -138,7 +154,8 @@ const Citas = () => {
           paciente: userId,
           nutricionista: nutricionistaId,
           modalidad,
-          descripcion
+          descripcion,
+
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -177,13 +194,32 @@ const Citas = () => {
       });
       return;
     }
-
+    if (citaAConfirmar?.modalidad === 'presencial' && !lugar) {
+      mostrarMensaje({
+        respuesta: 'Para citas virtuales es necesario proporcionar el link de la reunión',
+        tipo: false
+      });
+      return;
+    }
     try {
+      // Crear una fecha local y convertirla a ISO string para enviar al backend
+      const fechaLocal = new Date(fechaConfirmacion);
+
+      // Verificar que la fecha sea válida
+      if (isNaN(fechaLocal.getTime())) {
+        mostrarMensaje({
+          respuesta: 'Fecha inválida',
+          tipo: false
+        });
+        return;
+      }
+
       const { data } = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/confirmar-cita/${citaAConfirmar._id}`,
         {
-          fecha: fechaConfirmacion,
-          linkReunion: citaAConfirmar.modalidad === 'virtual' ? linkReunion : undefined
+          fecha: fechaLocal.toISOString(),
+          linkReunion: citaAConfirmar.modalidad === 'virtual' ? linkReunion : undefined,
+          lugar: citaAConfirmar.modalidad === 'presencial' ? lugar : undefined
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -195,6 +231,7 @@ const Citas = () => {
 
       setFechaConfirmacion('');
       setLinkReunion('');
+      setLugar('');
       setCitaAConfirmar(null);
       obtenerCitas(userRole, userId);
     } catch (error) {
@@ -278,6 +315,7 @@ const Citas = () => {
     const descripcionLower = cita.descripcion.toLowerCase();
     const estadoLower = cita.estado.toLowerCase();
     const linkLower = cita.linkReunion?.toLowerCase() || '';
+    const lugarLower = cita.lugar?.toLowerCase() || '';
 
     return (
       pacienteNombre.includes(searchTermLower) ||
@@ -287,19 +325,36 @@ const Citas = () => {
       descripcionLower.includes(searchTermLower) ||
       estadoLower.includes(searchTermLower) ||
       linkLower.includes(searchTermLower) ||
+      lugarLower.includes(searchTermLower) ||
       (cita.fecha && new Date(cita.fecha).toLocaleString().includes(searchTerm))
     );
   });
 
   const formatFecha = (fecha) => {
     if (!fecha) return 'Por confirmar';
-    return new Date(fecha).toLocaleString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+
+    try {
+      // Crear una fecha en la zona horaria local
+      const fechaLocal = new Date(fecha);
+
+      // Verificar si la fecha es válida
+      if (isNaN(fechaLocal.getTime())) {
+        return 'Fecha inválida';
+      }
+
+      // Formatear la fecha en la zona horaria local
+      return fechaLocal.toLocaleString('en-CA', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      });
+    } catch (error) {
+      console.error('Error al formatear fecha:', error);
+      return 'Error en fecha';
+    }
   };
 
 
@@ -490,11 +545,11 @@ const Citas = () => {
                 </label>
                 <input
                   type="text"
-                  value={citaAConfirmar.lugar || ''}
-                  onChange={(e) => setCitaAConfirmar({ ...citaAConfirmar, lugar: e.target.value })}
+                  value={lugar}
+                  onChange={(e) => setLugar(e.target.value)}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-green-500 focus:ring-green-500"
                   placeholder="Ej: Consultorio 101, Clínica ABC"
-                  required
+                  required={citaAConfirmar.modalidad === 'presencial'}
                 />
               </div>
             )}
