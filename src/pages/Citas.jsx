@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FaCalendarAlt, FaClock, FaTrash, FaCheck, FaTimes, FaSearch, FaVideo, FaMapMarkerAlt } from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
 import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
+import ConfirmCancelModal from '../components/Modals/ConfirmCancelModal';
 import { jwtDecode } from 'jwt-decode';
 import { set } from 'react-hook-form';
 const Citas = () => {
@@ -23,6 +24,10 @@ const Citas = () => {
   const [citaAConfirmar, setCitaAConfirmar] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState(null);
+  const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
+  const [idToCancel, setIdToCancel] = useState(null);
+  const [expandedDescriptions, setExpandedDescriptions] = useState(new Set());
+  const [tooltip, setTooltip] = useState({ show: false, text: '', x: 0, y: 0 });
   const token = localStorage.getItem('token');
 
   const mostrarMensaje = (nuevoMensaje) => {
@@ -346,6 +351,49 @@ const Citas = () => {
     }
   };
 
+  const openCancelModal = (id) => {
+    setIdToCancel(id);
+    setIsCancelModalOpen(true);
+  };
+
+  const closeCancelModal = () => {
+    setIdToCancel(null);
+    setIsCancelModalOpen(false);
+  };
+
+  const confirmCancel = async () => {
+    try {
+      await handleCancelarCita(idToCancel);
+    } finally {
+      closeCancelModal();
+    }
+  };
+
+  const toggleDescription = (citaId) => {
+    setExpandedDescriptions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(citaId)) {
+        newSet.delete(citaId);
+      } else {
+        newSet.add(citaId);
+      }
+      return newSet;
+    });
+  };
+
+  const showTooltip = (text, event) => {
+    setTooltip({
+      show: true,
+      text,
+      x: event.clientX + 10,
+      y: event.clientY - 10
+    });
+  };
+
+  const hideTooltip = () => {
+    setTooltip({ show: false, text: '', x: 0, y: 0 });
+  };
+
   const filteredCitas = citas.filter(cita => {
     const searchTermLower = searchTerm.toLowerCase();
     const pacienteNombre = cita.paciente?.nombre?.toLowerCase() || '';
@@ -622,14 +670,14 @@ const Citas = () => {
               {searchTerm ? 'No se encontraron citas con ese criterio' : 'No hay citas registradas'}
             </div>
           ) : (
-            <div className="overflow-x-auto py-4">
+            <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       {userRole === 'paciente' ? 'Nutricionista' : 'Paciente'}
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/3">Descripción</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha y Reunión</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
@@ -685,7 +733,31 @@ const Citas = () => {
                         </div>
                       </td>
                       <td className="px-6 py-6">
-                        <div className="text-sm text-gray-900 max-w-xs truncate">{cita.descripcion}</div>
+                        <div className="text-sm text-gray-900">
+                          <div className={`${expandedDescriptions.has(cita._id) ? '' : 'overflow-hidden'}`}>
+                            <div
+                              className={`${expandedDescriptions.has(cita._id) ? '' : 'overflow-hidden cursor-help'}`}
+                              style={{
+                                display: expandedDescriptions.has(cita._id) ? 'block' : '-webkit-box',
+                                WebkitLineClamp: expandedDescriptions.has(cita._id) ? 'unset' : '2',
+                                WebkitBoxOrient: expandedDescriptions.has(cita._id) ? 'unset' : 'vertical',
+                                maxHeight: expandedDescriptions.has(cita._id) ? 'none' : '3rem'
+                              }}
+                              onMouseEnter={(e) => !expandedDescriptions.has(cita._id) && showTooltip(cita.descripcion, e)}
+                              onMouseLeave={hideTooltip}
+                            >
+                              {cita.descripcion}
+                            </div>
+                          </div>
+                          {cita.descripcion.length > 80 && (
+                            <button
+                              onClick={() => toggleDescription(cita._id)}
+                              className="text-blue-600 hover:text-blue-800 text-xs mt-1 focus:outline-none"
+                            >
+                              {expandedDescriptions.has(cita._id) ? 'Ver menos' : 'Ver más'}
+                            </button>
+                          )}
+                        </div>
                       </td>
                       <td className="px-6 py-6 whitespace-nowrap">
                         <div className="text-sm text-gray-900 flex flex-col gap-1">
@@ -733,7 +805,7 @@ const Citas = () => {
 
                         {(userRole === 'paciente' || (userRole === 'nutricionista' && cita.estado !== 'completada')) && (
                           <button
-                            onClick={() => handleCancelarCita(cita._id)}
+                            onClick={() => openCancelModal(cita._id)}
                             className="text-yellow-600 hover:text-yellow-900 mr-3 cursor-pointer"
                             title="Cancelar cita"
                             disabled={cita.estado === 'cancelada'}
@@ -762,11 +834,32 @@ const Citas = () => {
           Mostrando {filteredCitas.length} de {citas.length} citas
         </div>
 
+        {/* Tooltip personalizado */}
+        {tooltip.show && (
+          <div
+            className="fixed z-50 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg max-w-xs break-words"
+            style={{
+              left: tooltip.x,
+              top: tooltip.y,
+              transform: 'translateY(-100%)'
+            }}
+          >
+            {tooltip.text}
+          </div>
+        )}
+
         <ConfirmDeleteModal
           isOpen={isDeleteModalOpen}
           onClose={closeDeleteModal}
           onConfirm={confirmDelete}
           message="¿Estás seguro de que deseas eliminar esta cita?"
+        />
+
+        <ConfirmCancelModal
+          isOpen={isCancelModalOpen}
+          onClose={closeCancelModal}
+          onConfirm={confirmCancel}
+          message="¿Estás seguro de que deseas cancelar esta cita?"
         />
       </div>
     )
