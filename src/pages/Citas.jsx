@@ -732,7 +732,7 @@ const Citas = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-6">
+                      <td className="px-10 py-6 ">
                         <div className="text-sm text-gray-900">
                           <div className={`${expandedDescriptions.has(cita._id) ? '' : 'overflow-hidden'}`}>
                             <div
