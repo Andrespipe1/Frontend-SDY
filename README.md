@@ -412,16 +412,6 @@ src/
       <br />
       <sub>Full Stack Developer</sub>
     </td>
-    #Backend
-    <td align="center">
-      <a href="https://github.com/Wilmer-Vnr">
-        <img src="https://avatars.githubusercontent.com/Wilmer_Vnr" width="100px;" alt=""/>
-        <br />
-        <sub><b>Wilmer David Vargas Nilve</b></sub>
-      </a>
-      <br />
-      <sub>Full Stack Developer</sub>
-    </td>
   </tr>
 </table>
 
