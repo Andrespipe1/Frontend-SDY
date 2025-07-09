@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaClipboardList, FaUtensils, FaSave } from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
 import ParametrosSalud from './ParametrosSalud';
@@ -10,9 +10,13 @@ const Formularios = () => {
   const [activeTab, setActiveTab] = useState('salud');
   const [mensaje, setMensaje] = useState({});
 
-  const { token,user } = useAuth();
+  const handleCloseMensaje = () => {
+    setMensaje({});
+  };
 
-  
+  const { token, user } = useAuth();
+
+
   const handleDescargarPDF = async () => {
     try {
       const pdfDoc = await generatePatientReport(user, token); // Cambiado aquí
@@ -34,7 +38,7 @@ const Formularios = () => {
       <div className="max-w-6xl mx-auto">
         {Object.keys(mensaje).length > 0 && (
           <div className="mb-4 sm:mb-6">
-            <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
+            <Mensaje tipo={mensaje.tipo} onClose={handleCloseMensaje}>{mensaje.respuesta}</Mensaje>
           </div>
         )}
 
@@ -53,22 +57,20 @@ const Formularios = () => {
             <div className="flex space-x-1 sm:space-x-2 overflow-x-auto pb-1 sm:pb-0">
               <button
                 onClick={() => setActiveTab('salud')}
-                className={`flex items-center px-3 py-2 text-sm sm:text-base sm:px-4 sm:py-2 rounded-lg ${
-                  activeTab === 'salud' 
-                    ? 'bg-blue-100 text-blue-700' 
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
+                className={`flex items-center px-3 py-2 text-sm sm:text-base sm:px-4 sm:py-2 rounded-lg cursor-pointer ${activeTab === 'salud'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'text-gray-600 hover:bg-gray-100'
+                  }`}
               >
                 <FaClipboardList className="mr-1 sm:mr-2" />
                 <span className="whitespace-nowrap">Parámetros</span>
               </button>
               <button
                 onClick={() => setActiveTab('comidas')}
-                className={`flex items-center px-3 py-2 text-sm sm:text-base sm:px-4 sm:py-2 rounded-lg ${
-                  activeTab === 'comidas' 
-                    ? 'bg-blue-100 text-blue-700' 
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
+                className={`flex items-center px-3 py-2 text-sm sm:text-base sm:px-4 sm:py-2 rounded-lg cursor-pointer ${activeTab === 'comidas'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'text-gray-600 hover:bg-gray-100'
+                  }`}
               >
                 <FaUtensils className="mr-1 sm:mr-2" />
                 <span className="whitespace-nowrap">Nutrición</span>
@@ -78,7 +80,7 @@ const Formularios = () => {
             </div>
             <button
               onClick={handleDescargarPDF}
-              className="mt flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-md"
+              className="mt flex items-center gap-2 px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors shadow-md cursor-pointer"
             >
               <FaSave /> Descargar Historial (PDF)
             </button>

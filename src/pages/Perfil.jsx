@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaUser, FaLock, FaSave, FaKey, FaHome, FaPhone, 
-         FaBirthdayCake, FaEye, FaEyeSlash, FaCamera, FaSpinner } from 'react-icons/fa';
+import {
+  FaUser, FaLock, FaSave, FaKey, FaHome, FaPhone,
+  FaBirthdayCake, FaEye, FaEyeSlash, FaCamera, FaSpinner
+} from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
 
 import { useAuth } from '../context/AuthProvider';
@@ -9,13 +11,13 @@ const Perfil = () => {
 
   const { token } = useAuth();
 
-  const [perfil, setPerfil] = useState({ 
+  const [perfil, setPerfil] = useState({
     nombre: '',
-    apellido: '', 
-    email: '', 
+    apellido: '',
+    email: '',
     _id: '',
     edad: '',
-    direccion: '', 
+    direccion: '',
     celular: '',
     avatar: ''
   });
@@ -44,9 +46,13 @@ const Perfil = () => {
 
   const [mensaje, setMensaje] = useState({});
 
+  const handleCloseMensaje = () => {
+    setMensaje({});
+  };
+
   const mostrarMensaje = (nuevoMensaje) => {
-      setMensaje(nuevoMensaje);
-      setTimeout(() => setMensaje({}), 3000);
+    setMensaje(nuevoMensaje);
+    setTimeout(() => setMensaje({}), 3000);
   };
 
   const handleDescargarPDF = async () => {
@@ -68,11 +74,11 @@ const Perfil = () => {
         setPerfil(data);
       } catch (error) {
         mostrarMensaje({ respuesta: 'Error al obtener el perfil', tipo: false });
-      }finally {
+      } finally {
         setLoading(false);
       }
     };
-    
+
     obtenerPerfil();
   }, []);
 
@@ -126,14 +132,14 @@ const Perfil = () => {
       const { data } = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/paciente/avatar/${perfil._id}`,
         formData,
-        { 
-          headers: { 
+        {
+          headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
-          } 
+          }
         }
       );
-      
+
       mostrarMensaje({ respuesta: data.msg || 'Avatar actualizado correctamente', tipo: true });
       setPerfil(prev => ({ ...prev, avatar: data.avatar }));
       setPreviewImage('');
@@ -178,7 +184,7 @@ const Perfil = () => {
   // Validaciones
   const validateField = (name, value) => {
     const newErrors = { ...errors };
-  
+
     switch (name) {
       case 'edad':
         newErrors.edad = value < 0 || value > 100 ? 'La edad debe estar entre 0 y 100 años' : '';
@@ -208,10 +214,10 @@ const Perfil = () => {
       default:
         break;
     }
-  
+
     setErrors(newErrors);
   };
-    
+
 
   const togglePasswordVisibility = (field) => {
     setShowPassword(prev => ({ ...prev, [field]: !prev[field] }));
@@ -226,11 +232,11 @@ const Perfil = () => {
         </div>
       </div>
     ) : (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-2 px-4 sm:px-6 lg:px-16">
-      {/* Mensaje */}
-      {Object.keys(mensaje).length > 0 && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md">
-          <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-2 px-4 sm:px-6 lg:px-16">
+        {/* Mensaje */}
+        {Object.keys(mensaje).length > 0 && (
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md">
+            <Mensaje tipo={mensaje.tipo} onClose={handleCloseMensaje}>{mensaje.respuesta}</Mensaje>
           </div>
         )}
 
@@ -277,7 +283,7 @@ const Perfil = () => {
                 {perfil.nombre} {perfil.apellido}
               </h2>
               <p className="text-gray-600 mt-1">{perfil.email}</p>
-              
+
               <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-3">
                 <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm flex items-center">
                   <FaUser className="mr-1" /> Paciente
@@ -289,40 +295,39 @@ const Perfil = () => {
                   <FaBirthdayCake className="mr-1" /> {perfil.edad || '0'} años
                 </div>
               </div>
-               {/* Avatar upload section */}
-                  {previewImage && (
-                    <div className="flex gap-4 mt-6">
-                      <button
-                        onClick={handleUploadAvatar}
-                        disabled={isUploading}
-                        className={`flex items-center gap-2 px-6 py-2 rounded-lg text-white ${
-                          isUploading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
-                        } transition-colors shadow-md`}
-                      >
-                        {isUploading ? (
-                          <>
-                            <FaSpinner className="animate-spin" />
-                            Subiendo...
-                          </>
-                        ) : (
-                          <>
-                            <FaSave /> Guardar Avatar
-                          </>
-                        )}
-                      </button>
-                      <button
-                        onClick={() => {
-                          setPreviewImage('');
-                          setSelectedImage(null);
-                        }}
-                        className="flex items-center gap-2 px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors shadow-md"
-                      >
-                        Cancelar
-                      </button>
-                    </div>
-                  )}
+              {/* Avatar upload section */}
+              {previewImage && (
+                <div className="flex gap-4 mt-6">
+                  <button
+                    onClick={handleUploadAvatar}
+                    disabled={isUploading}
+                    className={`flex items-center gap-2 px-6 py-2 rounded-lg text-white ${isUploading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+                      } transition-colors shadow-md`}
+                  >
+                    {isUploading ? (
+                      <>
+                        <FaSpinner className="animate-spin" />
+                        Subiendo...
+                      </>
+                    ) : (
+                      <>
+                        <FaSave /> Guardar Avatar
+                      </>
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setPreviewImage('');
+                      setSelectedImage(null);
+                    }}
+                    className="flex items-center gap-2 px-6 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors shadow-md"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              )}
             </div>
-            
+
           </div>
         </div>
         {/* Contenido principal */}
@@ -335,7 +340,7 @@ const Perfil = () => {
               </div>
               <h2 className="text-2xl font-bold text-gray-800">Información Personal</h2>
             </div>
-          
+
             <form onSubmit={handleActualizarPerfil} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Nombre */}
@@ -356,7 +361,7 @@ const Perfil = () => {
                     />
                   </div>
                 </div>
-                
+
                 {/* Apellido */}
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">Apellido</label>
@@ -373,7 +378,7 @@ const Perfil = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Edad */}
                 <div className="space-y-2">
@@ -387,9 +392,8 @@ const Perfil = () => {
                       name="edad"
                       value={perfil.edad}
                       onChange={handlePerfilChange}
-                      className={`pl-10 w-full rounded-lg border ${
-                        errors.edad ? 'border-red-500' : 'border-gray-300'
-                      } px-3 py-2 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 transition-all`}
+                      className={`pl-10 w-full rounded-lg border ${errors.edad ? 'border-red-500' : 'border-gray-300'
+                        } px-3 py-2 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 transition-all`}
                       placeholder="Ej: 30"
                       min="0"
                       max="100"
@@ -411,9 +415,8 @@ const Perfil = () => {
                       name="celular"
                       value={perfil.celular}
                       onChange={handlePerfilChange}
-                      className={`pl-10 w-full rounded-lg border ${
-                        errors.celular ? 'border-red-500' : 'border-gray-300'
-                      } px-3 py-2 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 transition-all`}
+                      className={`pl-10 w-full rounded-lg border ${errors.celular ? 'border-red-500' : 'border-gray-300'
+                        } px-3 py-2 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 transition-all`}
                       placeholder="Ej: 123456789"
                       pattern="[0-9]*"
                       required
@@ -463,7 +466,7 @@ const Perfil = () => {
               </div>
               <h2 className="text-2xl font-bold text-gray-800">Seguridad</h2>
             </div>
-            
+
             <form onSubmit={handleActualizarPassword} className="space-y-6">
               {/* Contraseña actual */}
               <div className="space-y-2">
@@ -503,9 +506,8 @@ const Perfil = () => {
                     name="passwordnuevo"
                     value={passwordForm.passwordnuevo}
                     onChange={handlePasswordChange}
-                    className={`pl-10 w-full rounded-lg border ${
-                      errors.password ? 'border-red-500' : 'border-gray-300'
-                    } px-3 py-2 focus:border-green-500 focus:ring-green-500 placeholder-gray-400 transition-all`}
+                    className={`pl-10 w-full rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-300'
+                      } px-3 py-2 focus:border-green-500 focus:ring-green-500 placeholder-gray-400 transition-all`}
                     placeholder="••••••••"
                     required
                   />

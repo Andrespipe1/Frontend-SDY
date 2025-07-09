@@ -26,8 +26,8 @@ const ListaContactos = ({ onSelectContacto }) => {
 
         if (response.ok) {
           // Asegúrate de que data sea un array
-        const contactosArray = Array.isArray(data) ? data : data.pacientes || [];
-        setContactos(contactosArray);
+          const contactosArray = Array.isArray(data) ? data : data.pacientes || [];
+          setContactos(contactosArray);
 
         } else {
           console.error('Error al cargar contactos:', data);
@@ -44,7 +44,14 @@ const ListaContactos = ({ onSelectContacto }) => {
     }
   }, [user]);
 
-  if (loading) return <div>Cargando contactos...</div>;
+  if (loading) return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+        <p className="mt-4 text-lg font-semibold text-gray-700">Cargando contactos...</p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 h-full overflow-y-auto">

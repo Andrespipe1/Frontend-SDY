@@ -9,6 +9,10 @@ const ConfirmarCuenta = () => {
   const [confirmado, setConfirmado] = useState(false);
   const { token } = useParams();
 
+  const handleCloseMensaje = () => {
+    setMensaje({});
+  };
+
   useEffect(() => {
     const confirmarCuenta = async () => {
       try {
@@ -38,7 +42,7 @@ const ConfirmarCuenta = () => {
 
       <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm bg-white shadow-lg rounded-lg p-6">
         {Object.keys(mensaje).length > 0 && (
-          <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
+          <Mensaje tipo={mensaje.tipo} onClose={handleCloseMensaje}>{mensaje.respuesta}</Mensaje>
         )}
 
         {confirmado && (

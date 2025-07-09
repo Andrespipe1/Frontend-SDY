@@ -80,7 +80,7 @@ const Chat = ({ contacto, onBack }) => {
       {/* Header fijo - Altura exacta igual a tu header principal */}
       <div className="bg-white border-b border-gray-200 p-4 flex items-center h-16 flex-shrink-0">
         {onBack && (
-          <button onClick={onBack} className="mr-2 p-1 rounded-full hover:bg-gray-100 md:hidden">
+          <button onClick={onBack} className="mr-2 p-1 rounded-full hover:bg-gray-100 md:hidden cursor-pointer">
             <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
@@ -107,45 +107,43 @@ const Chat = ({ contacto, onBack }) => {
       </div>
 
       {/* Área de mensajes con margen superior igual al header */}
-      <div 
+      <div
         className="flex-1 overflow-y-auto p-4 bg-gray-50"
         style={{
           marginTop: '64px', // Igual a la altura de tu header principal
           height: 'calc(100vh - 64px - 64px - 72px)' // 100vh - header - chat header - footer
         }}
       >
-      <div className="space-y-3">
-        {mensajes.map((mensaje, index) => (
-          <div
-            key={index}
-            className={`flex flex-col ${
-              mensaje.esMio ? "items-end" : "items-start"
-            }`}
-          >
-            {/* Mostrar el nombre del remitente solo si no es tu mensaje */}
-            {!mensaje.esMio && (
-              <p className="text-xs text-gray-500 mb-1">{contacto.nombre || "Desconocido"}</p>
-            )}
+        <div className="space-y-3">
+          {mensajes.map((mensaje, index) => (
             <div
-              className={`p-3 rounded-lg max-w-xs md:max-w-md ${
-                mensaje.esMio
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-200 text-gray-900"
-              }`}
+              key={index}
+              className={`flex flex-col ${mensaje.esMio ? "items-end" : "items-start"
+                }`}
             >
-              {mensaje.contenido}
+              {/* Mostrar el nombre del remitente solo si no es tu mensaje */}
+              {!mensaje.esMio && (
+                <p className="text-xs text-gray-500 mb-1">{contacto.nombre || "Desconocido"}</p>
+              )}
+              <div
+                className={`p-3 rounded-lg max-w-xs md:max-w-md ${mensaje.esMio
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-200 text-gray-900"
+                  }`}
+              >
+                {mensaje.contenido}
+              </div>
+              {/* Mostrar la hora del mensaje */}
+              <p className="text-xs text-gray-400 mt-1">
+                {new Date(mensaje.createdAt || Date.now()).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </p>
             </div>
-            {/* Mostrar la hora del mensaje */}
-            <p className="text-xs text-gray-400 mt-1">
-              {new Date(mensaje.createdAt || Date.now()).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
       </div>
 
       {/* Input fijo en la parte inferior */}
@@ -159,7 +157,7 @@ const Chat = ({ contacto, onBack }) => {
           />
           <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 focus:outline-none"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 focus:outline-none cursor-pointer"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

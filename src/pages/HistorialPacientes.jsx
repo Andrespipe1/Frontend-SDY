@@ -14,6 +14,9 @@ const HistorialPaciente = () => {
   const [fechaFiltro, setFechaFiltro] = useState('');
   const [pacienteInfo, setPacienteInfo] = useState(null);
   const [recomendaciones, setRecomendaciones] = useState([]);
+  const [mensajeSinRecomendaciones, setMensajeSinRecomendaciones] = useState("");
+  const [mensajeSinParametros, setMensajeSinParametros] = useState("");
+  const [mensajeSinComidas, setMensajeSinComidas] = useState("");
 
   const token = localStorage.getItem('token');
 
@@ -22,11 +25,18 @@ const HistorialPaciente = () => {
     setTimeout(() => setMensaje({}), 3000);
   };
 
+  const handleCloseMensaje = () => {
+    setMensaje({});
+  };
+
   useEffect(() => {
     const obtenerDatos = async () => {
       try {
         setIsLoading(true);
-        
+        setMensajeSinRecomendaciones(""); // Limpiar mensaje al cambiar de pestaña
+        setMensajeSinParametros("");
+        setMensajeSinComidas("");
+
         // 1. Obtener información del paciente
         const { data: pacienteData } = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL}/listar-pacientes/${pacienteId}`,
@@ -52,42 +62,72 @@ const HistorialPaciente = () => {
           endpoint = `${import.meta.env.VITE_BACKEND_URL}/obtener-recomendaciones/${pacienteId}`;
         }
 
-        const { data: historialData } = await axios.get(endpoint, {
-          headers: { Authorization: `Bearer ${token}` },
-          timeout: 1000
-        });
-
-        let datos = [];
-        if (activeTab === 'parametros') {
-          datos = historialData?.parametros || [];
-        } else if (activeTab === 'comidas') {
-          datos = historialData?.comidas || [];
-        } else if (activeTab === 'recomendaciones') {
-          datos = historialData?.recomendaciones || [];
-          setRecomendaciones(datos);
-        }
-
-        // Aplicar filtro por fecha
-        if (fechaFiltro) {
-          datos = datos.filter(item => {
-            try {
-              const fechaItem = new Date(item.createdAt).toISOString().split('T')[0];
-              return fechaItem === fechaFiltro;
-            } catch (e) {
-              console.error('Error procesando fecha:', e);
-              return false;
+        if (activeTab === 'recomendaciones') {
+          try {
+            const { data: historialData } = await axios.get(endpoint, {
+              headers: { Authorization: `Bearer ${token}` },
+              timeout: 1000
+            });
+            let datos = historialData?.recomendaciones || [];
+            setRecomendaciones(datos);
+            if (fechaFiltro) {
+              datos = datos.filter(item => {
+                try {
+                  const fechaItem = new Date(item.createdAt).toISOString().split('T')[0];
+                  return fechaItem === fechaFiltro;
+                } catch (e) {
+                  console.error('Error procesando fecha:', e);
+                  return false;
+                }
+              });
             }
+            setHistorial(datos);
+          } catch (error) {
+            if (error.response?.status === 404 && error.response?.data?.msg) {
+              setHistorial([]);
+              setMensajeSinRecomendaciones(error.response.data.msg);
+            } else {
+              throw error;
+            }
+          }
+        } else {
+          const { data: historialData } = await axios.get(endpoint, {
+            headers: { Authorization: `Bearer ${token}` },
+            timeout: 1000
           });
-        }
 
-        setHistorial(datos);
+          let datos = [];
+          if (activeTab === 'parametros') {
+            datos = historialData?.parametros || [];
+          } else if (activeTab === 'comidas') {
+            datos = historialData?.comidas || [];
+          } else if (activeTab === 'recomendaciones') {
+            datos = historialData?.recomendaciones || [];
+            setRecomendaciones(datos);
+          }
+
+          // Aplicar filtro por fecha
+          if (fechaFiltro) {
+            datos = datos.filter(item => {
+              try {
+                const fechaItem = new Date(item.createdAt).toISOString().split('T')[0];
+                return fechaItem === fechaFiltro;
+              } catch (e) {
+                console.error('Error procesando fecha:', e);
+                return false;
+              }
+            });
+          }
+
+          setHistorial(datos);
+        }
 
       } catch (error) {
         console.error('Error completo:', error);
         mostrarMensaje({
-          respuesta: error.response?.data?.msg || 
-                    error.message || 
-                    'Error al cargar los datos',
+          respuesta: error.response?.data?.msg ||
+            error.message ||
+            'Error al cargar los datos',
           tipo: false
         });
       } finally {
@@ -104,7 +144,7 @@ const HistorialPaciente = () => {
     if (peso && estatura) {
       const alturaEnMetros = estatura / 100;
       const imc = (peso / (alturaEnMetros * alturaEnMetros)).toFixed(1);
-      
+
       let clasificacion = '';
       let colorClass = '';
       if (imc < 18.5) {
@@ -120,7 +160,7 @@ const HistorialPaciente = () => {
         clasificacion = 'Obesidad';
         colorClass = 'text-red-600';
       }
-      
+
       return { valor: imc, clasificacion, colorClass };
     }
     return { valor: '', clasificacion: '', colorClass: '' };
@@ -147,7 +187,7 @@ const HistorialPaciente = () => {
   return (
     <div className="container mx-auto p-4">
       {/* Botón de regreso */}
-      <button 
+      <button
         onClick={() => navigate('/dashboard_Nutri/listarPacientes')}
         className="flex items-center text-blue-600 mb-4"
       >
@@ -155,34 +195,32 @@ const HistorialPaciente = () => {
         Volver
       </button>
 
-      {/* Mostrar mensajes de error */}
-      {mensaje.respuesta && (
-        <div className="mb-4">
-          <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
-        </div>
-      )}
-
       {/* Contenido principal */}
       {isLoading ? (
-        <div className="text-center py-8">Cargando datos del paciente...</div>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p className="mt-4 text-lg font-semibold text-gray-700">Cargando datos del paciente...</p>
+          </div>
+        </div>
       ) : pacienteInfo ? (
         <>
           {/* Información del paciente */}
           <div className="bg-white rounded-lg shadow-md p-4 mb-6">
             <div className="flex items-center">
-            <div className='h-18 w-18 rounded-full'>
-                    {pacienteInfo.avatar ? (
-                    <img
-                      src={pacienteInfo.avatar}
-                      alt={pacienteInfo.nombre}
-                      className="w-18 h-18 rounded-full object-cover"
-                    />
-                  ) : (
-              <div className="h-18 w-18 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                {pacienteInfo.nombre.charAt(0)}{pacienteInfo.apellido.charAt(0)}
+              <div className='h-18 w-18 rounded-full'>
+                {pacienteInfo.avatar ? (
+                  <img
+                    src={pacienteInfo.avatar}
+                    alt={pacienteInfo.nombre}
+                    className="w-18 h-18 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="h-18 w-18 rounded-full bg-gradient-to-r from-green-400 to-blue-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                    {pacienteInfo.nombre.charAt(0)}{pacienteInfo.apellido.charAt(0)}
+                  </div>
+                )}
               </div>
-                  )}
-            </div>
               <div className="ml-4">
                 <h1 className="text-2xl font-bold text-gray-800">
                   {pacienteInfo.nombre} {pacienteInfo.apellido}
@@ -197,31 +235,28 @@ const HistorialPaciente = () => {
             <nav className="-mb-px flex space-x-8">
               <button
                 onClick={() => setActiveTab('parametros')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'parametros'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'parametros'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
               >
                 Parámetros
               </button>
               <button
                 onClick={() => setActiveTab('comidas')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'comidas'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'comidas'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
               >
                 Comidas
               </button>
               <button
                 onClick={() => setActiveTab('recomendaciones')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === 'recomendaciones'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'recomendaciones'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
               >
                 Recomendaciones
               </button>
@@ -261,8 +296,12 @@ const HistorialPaciente = () => {
           {activeTab === 'parametros' ? (
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Historial de Parámetros</h2>
-              
-              {historial.length === 0 ? (
+
+              {mensajeSinParametros ? (
+                <div className="text-center py-8 text-gray-500">
+                  {mensajeSinParametros}
+                </div>
+              ) : historial.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   No hay registros de parámetros para este paciente
                 </div>
@@ -315,8 +354,12 @@ const HistorialPaciente = () => {
           ) : activeTab === 'comidas' ? (
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">Historial de Comidas</h2>
-              
-              {historial.length === 0 ? (
+
+              {mensajeSinComidas ? (
+                <div className="text-center py-8 text-gray-500">
+                  {mensajeSinComidas}
+                </div>
+              ) : historial.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   No hay registros de comidas para este paciente
                 </div>
@@ -347,11 +390,15 @@ const HistorialPaciente = () => {
           ) : (
             <div className="bg-white rounded-lg shadow-md p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                <FaClipboardList className="mr-2 text-blue-500" />
+
                 Historial de Recomendaciones
               </h2>
-              
-              {historial.length === 0 ? (
+
+              {mensajeSinRecomendaciones ? (
+                <div className="text-center py-8 text-gray-500">
+                  {mensajeSinRecomendaciones}
+                </div>
+              ) : historial.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   No hay recomendaciones registradas para este paciente
                 </div>
@@ -361,11 +408,10 @@ const HistorialPaciente = () => {
                     <div key={recomendacion._id} className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
-                            recomendacion.tipo === 'parametros' 
-                              ? 'bg-blue-100 text-blue-800' 
-                              : 'bg-green-100 text-green-800'
-                          }`}>
+                          <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${recomendacion.tipo === 'parametros'
+                            ? 'bg-blue-100 text-blue-800'
+                            : 'bg-green-100 text-green-800'
+                            }`}>
                             {recomendacion.tipo === 'parametros' ? 'Parámetros' : 'Comidas'}
                           </span>
                           <span className="ml-3 text-sm text-gray-500">

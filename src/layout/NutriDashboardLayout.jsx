@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { Outlet, NavLink } from 'react-router-dom'
 import Header from '../components/HeaderNutri'
 import Footer from '../components/Footer'
-import {UserIcon,FileTextIcon,MessageCircleIcon,MenuIcon,XIcon,Home,ClockIcon} from 'lucide-react'
+import { UserIcon, FileTextIcon, MessageCircleIcon, MenuIcon, XIcon, Home, ClockIcon } from 'lucide-react'
 import { useAuth } from '../context/AuthProvider'
 const NutriDashboardLayout = () => {
-  const { user} = useAuth();
+  const { user } = useAuth();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
@@ -27,7 +27,7 @@ const NutriDashboardLayout = () => {
 
       {/* Botón menú visible solo en móviles */}
       <div className="md:hidden fixed top-16 left-0 w-full bg-white shadow z-30 p-3 flex justify-between items-center">
-        <button onClick={() => setIsSidebarOpen(true)} className="flex items-center gap-2">
+        <button onClick={() => setIsSidebarOpen(true)} className="flex items-center gap-2 cursor-pointer">
           <MenuIcon className="w-6 h-6 text-gray-700" />
           <span className="font-semibold text-gray-800"></span>
         </button>
@@ -49,7 +49,7 @@ const NutriDashboardLayout = () => {
       >
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="text-lg font-semibold">Menú</h2>
-          <button onClick={() => setIsSidebarOpen(false)}>
+          <button onClick={() => setIsSidebarOpen(false)} className="cursor-pointer">
             <XIcon className="w-6 h-6 text-gray-700" />
           </button>
         </div>
@@ -61,7 +61,7 @@ const NutriDashboardLayout = () => {
               end={to === '/dashboard_Nutri'} // Agregar 'end' solo para el enlace "Inicio"
               onClick={() => setIsSidebarOpen(false)}
               className={({ isActive }) =>
-                `flex items-center gap-2 px-3 py-2 rounded-md ${isActive
+                `flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer ${isActive
                   ? 'bg-blue-100 text-blue-600 font-semibold'
                   : 'text-gray-700 hover:bg-gray-100'
                 }`
@@ -83,7 +83,7 @@ const NutriDashboardLayout = () => {
               to={to}
               end={to === '/dashboard_Nutri'} // Agregar 'end' solo para el enlace "Inicio"
               className={({ isActive }) =>
-                `flex items-center gap-2 px-4 py-2 rounded-md ${isActive
+                `flex items-center gap-2 px-4 py-2 rounded-md cursor-pointer ${isActive
                   ? 'bg-blue-100 text-blue-600 font-semibold'
                   : 'text-gray-700 hover:bg-gray-100'
                 }`

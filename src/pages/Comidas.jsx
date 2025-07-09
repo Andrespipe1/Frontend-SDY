@@ -32,6 +32,10 @@ const FormularioComidas = () => {
     setTimeout(() => setMensaje({}), 3000);
   };
 
+  const handleCloseMensaje = () => {
+    setMensaje({});
+  };
+
   useEffect(() => {
     const obtenerDatos = async () => {
       if (!pacienteId) {
@@ -296,7 +300,7 @@ const FormularioComidas = () => {
       />
 
       <div className="pb-4 sm:pb-8">
-        {mensaje.respuesta && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
+        {mensaje.respuesta && <Mensaje tipo={mensaje.tipo} onClose={handleCloseMensaje}>{mensaje.respuesta}</Mensaje>}
 
         {/* Formulario de registro de comidas */}
         <div className="bg-white rounded-lg shadow-sm sm:shadow-md p-4 sm:p-6 mb-6">
@@ -335,7 +339,7 @@ const FormularioComidas = () => {
                     <div className="flex justify-between mt-2">
                       <button
                         type="button"
-                        className="text-xs flex items-center text-red-600 hover:text-red-800 px-3 py-1 bg-red-50 rounded"
+                        className="text-xs flex items-center text-red-600 hover:text-red-800 px-3 py-1 bg-red-50 rounded cursor-pointer"
                         onClick={cancelarEdicion}
                       >
                         <FaTimes className="mr-1" size={10} />
@@ -343,7 +347,7 @@ const FormularioComidas = () => {
                       </button>
                       <button
                         type="button"
-                        className="text-xs flex items-center text-green-600 hover:text-green-800 px-3 py-1 bg-green-50 rounded"
+                        className="text-xs flex items-center text-green-600 hover:text-green-800 px-3 py-1 bg-green-50 rounded cursor-pointer"
                         onClick={actualizarComida}
                       >
                         <FaEdit className="mr-1" size={10} />
@@ -365,7 +369,7 @@ const FormularioComidas = () => {
                     <div className="flex justify-end mt-2">
                       <button
                         type="button"
-                        className="text-xs flex items-center text-blue-600 hover:text-blue-800 px-3 py-1 bg-blue-50 rounded"
+                        className="text-xs flex items-center text-blue-600 hover:text-blue-800 px-3 py-1 bg-blue-50 rounded cursor-pointer"
                         onClick={() => handleSubmitComida(comida.name)}
                       >
                         <FaPlus className="mr-1" size={10} />
@@ -404,7 +408,7 @@ const FormularioComidas = () => {
                     />
                     <button
                       onClick={() => setFechaFiltro('')}
-                      className="px-3 py-1 sm:px-4 sm:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center text-xs sm:text-sm"
+                      className="px-3 py-1 sm:px-4 sm:py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 flex items-center text-xs sm:text-sm cursor-pointer"
                       title="Limpiar filtro"
                       type="button"
                     >
@@ -484,7 +488,7 @@ const FormularioComidas = () => {
                         <button
                           type="button"
                           onClick={() => iniciarEdicionComida(comida)}
-                          className="text-blue-600 hover:text-blue-900 p-1"
+                          className="text-blue-600 hover:text-blue-900 p-1 cursor-pointer"
                           title="Editar"
                         >
                           <FaEdit size={14} />
@@ -492,7 +496,7 @@ const FormularioComidas = () => {
                         <button
                           type="button"
                           onClick={() => openDeleteModal(comida._id)}
-                          className="text-red-600 hover:text-red-900 p-1"
+                          className="text-red-600 hover:text-red-900 p-1 cursor-pointer"
                           title="Eliminar"
                         >
                           <FaTrash size={14} />

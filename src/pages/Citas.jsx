@@ -35,6 +35,10 @@ const Citas = () => {
     setTimeout(() => setMensaje({}), 3000);
   };
 
+  const handleCloseMensaje = () => {
+    setMensaje({});
+  };
+
   useEffect(() => {
     const obtenerDatosIniciales = async () => {
       try {
@@ -461,7 +465,7 @@ const Citas = () => {
         <div className="sm:mx-auto sm:w-full sm:max-w-4xl">
           {Object.keys(mensaje).length > 0 && (
             <div className="mb-6">
-              <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
+              <Mensaje tipo={mensaje.tipo} onClose={handleCloseMensaje}>{mensaje.respuesta}</Mensaje>
             </div>
           )}
 
@@ -664,7 +668,12 @@ const Citas = () => {
 
         <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-4xl bg-white rounded-lg shadow overflow-hidden">
           {loading ? (
-            <div className="p-8 text-center">Cargando citas...</div>
+            <div className="flex items-center justify-center min-h-[200px]">
+              <div className="text-center">
+                <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <p className="mt-4 text-lg font-semibold text-gray-700">Cargando citas...</p>
+              </div>
+            </div>
           ) : filteredCitas.length === 0 ? (
             <div className="p-8 text-center">
               {searchTerm ? 'No se encontraron citas con ese criterio' : 'No hay citas registradas'}

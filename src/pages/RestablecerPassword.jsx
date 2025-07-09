@@ -15,6 +15,10 @@ const RestablecerPassword = () => {
     confirmpassword: ''
   });
 
+  const handleCloseMensaje = () => {
+    setMensaje({});
+  };
+
   const validatePassword = (password) => {
     const errors = [];
     if (password.length < 8) {
@@ -90,7 +94,7 @@ const RestablecerPassword = () => {
       </Link>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
+        {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo} onClose={handleCloseMensaje}>{mensaje.respuesta}</Mensaje>}
         <img
           className="mx-auto h-25 w-auto border-2 border-green-600 rounded-full"
           src={logo}

@@ -20,6 +20,10 @@ const Login = () => {
     password: ""
   });
 
+  const handleCloseMensaje = () => {
+    setMensaje({});
+  };
+
   // Efecto para manejar el tiempo de bloqueo
   useEffect(() => {
     if (lockoutTime > 0) {
@@ -140,7 +144,7 @@ const Login = () => {
       </Link>
 
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>}
+        {Object.keys(mensaje).length > 0 && <Mensaje tipo={mensaje.tipo} onClose={handleCloseMensaje}>{mensaje.respuesta}</Mensaje>}
         <img
           className="mx-auto h-25 w-auto border-2 border-green-600 rounded-full"
           src={logo}

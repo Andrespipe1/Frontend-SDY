@@ -25,9 +25,14 @@ const Register = () => {
         specialChar: false
     });
     const [loading, setLoading] = useState(false);
+
+    const handleCloseMensaje = () => {
+        setMensaje({});
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-        
+
         // Validaciones específicas por campo
         if (name === 'nombre' || name === 'apellido') {
             // Solo letras y espacios, máximo 20 caracteres
@@ -58,7 +63,7 @@ const Register = () => {
                 ...form,
                 [name]: value
             });
-            
+
             // Validaciones de contraseña en tiempo real
             setPasswordErrors({
                 length: value.length >= 8,
@@ -81,7 +86,7 @@ const Register = () => {
 
     const validatePassword = (password) => {
         const errors = [];
-        
+
         if (password.length < 8) {
             errors.push("mínimo 8 caracteres");
         }
@@ -97,52 +102,52 @@ const Register = () => {
         if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
             errors.push("al menos un caracter especial");
         }
-        
+
         return errors;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Si ya está en proceso de carga, no permitir más clics
         if (loading) return;
-    
+
         setLoading(true); // Deshabilitar el botón
-    
+
         // Validaciones adicionales antes de enviar
         const errors = [];
-    
+
         if (form.nombre.length < 2) {
             errors.push("El nombre debe tener al menos 2 caracteres");
         }
-    
+
         if (form.apellido.length < 2) {
             errors.push("El apellido debe tener al menos 2 caracteres");
         }
-    
+
         if (!form.edad || form.edad < 1 || form.edad > 120) {
             errors.push("La edad debe ser entre 1 y 100 años");
         }
-    
+
         if (!form.celular || form.celular.length < 10) {
             errors.push("El celular debe tener al menos 10 dígitos");
         }
-    
+
         if (!/^\S+@\S+\.\S+$/.test(form.email)) {
             errors.push("Ingrese un email válido");
         }
-    
+
         const passwordValidationErrors = validatePassword(form.password);
         if (passwordValidationErrors.length > 0) {
             errors.push(`La contraseña debe tener: ${passwordValidationErrors.join(", ")}`);
         }
-    
+
         if (errors.length > 0) {
             setMensaje({ respuesta: errors.join(". "), tipo: false });
             setLoading(false); // Habilitar el botón nuevamente
             return;
         }
-    
+
         try {
             const url = `${import.meta.env.VITE_BACKEND_URL}/registro`;
             const respuesta = await axios.post(url, form);
@@ -167,7 +172,7 @@ const Register = () => {
         <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 {Object.keys(mensaje).length > 0 && (
-                    <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
+                    <Mensaje tipo={mensaje.tipo} onClose={handleCloseMensaje}>{mensaje.respuesta}</Mensaje>
                 )}
                 <img
                     className="mx-auto h-25 w-auto border-2 border-green-600 rounded-full"

@@ -21,6 +21,10 @@ const Recomendaciones = () => {
     setTimeout(() => setMensaje({}), 3000);
   };
 
+  const handleCloseMensaje = () => {
+    setMensaje({});
+  };
+
   useEffect(() => {
     const obtenerDatos = async () => {
       try {
@@ -117,22 +121,22 @@ const Recomendaciones = () => {
   return (
     <div className="p-6 lg:p-10 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
 
-        {mensaje.respuesta && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Mensaje tipo={mensaje.tipo}>{mensaje.respuesta}</Mensaje>
-          </motion.div>
-        )}
+      {mensaje.respuesta && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Mensaje tipo={mensaje.tipo} onClose={handleCloseMensaje}>{mensaje.respuesta}</Mensaje>
+        </motion.div>
+      )}
 
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-800 text-center mb-6">Panel de Recomendaciones</h2>
+      <h2 className="text-xl sm:text-2xl font-bold text-gray-800 text-center mb-6">Panel de Recomendaciones</h2>
 
 
       {/* Sección de Parámetros */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10"
@@ -146,7 +150,7 @@ const Recomendaciones = () => {
             </span>
             Últimos Parámetros
           </h2>
-          
+
           {parametros ? (
             <div className="space-y-3">
               <div className="flex justify-between p-3 bg-blue-50 rounded-lg">
@@ -173,13 +177,12 @@ const Recomendaciones = () => {
                   <span className="font-semibold">{parametros.discapacidad}</span>
                 </div>
               )}
-              
+
               <button
                 onClick={generarRecomendacionesParametros}
                 disabled={isGeneratingParams}
-                className={`mt-4 w-full px-4 py-3 rounded-xl flex items-center justify-center space-x-2 transition-all duration-300 ${
-                  isGeneratingParams ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
-                } text-white font-medium`}
+                className={`mt-4 w-full px-4 py-3 rounded-xl flex items-center justify-center space-x-2 transition-all duration-300 ${isGeneratingParams ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+                  } text-white font-medium`}
               >
                 {isGeneratingParams ? (
                   <>
@@ -205,7 +208,7 @@ const Recomendaciones = () => {
             </div>
           )}
         </div>
-        
+
         <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
             <span className="bg-purple-100 p-2 rounded-full mr-3">
@@ -215,7 +218,7 @@ const Recomendaciones = () => {
             </span>
             Recomendación de Parámetros
           </h2>
-          
+
           {ultimaRecomendacionParametros ? (
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -237,7 +240,7 @@ const Recomendaciones = () => {
       </motion.div>
 
       {/* Sección de Comidas */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.1 }}
@@ -252,12 +255,12 @@ const Recomendaciones = () => {
             </span>
             Comidas del Último Día
           </h2>
-          
+
           {comidas.length > 0 ? (
             <div>
               <div className="grid grid-cols-1 gap-3 mb-4">
                 {comidas.map((comida) => (
-                  <motion.div 
+                  <motion.div
                     key={comida._id}
                     whileHover={{ scale: 1.02 }}
                     className="p-3 bg-green-50 rounded-lg shadow-sm border border-green-100"
@@ -274,13 +277,12 @@ const Recomendaciones = () => {
                   </motion.div>
                 ))}
               </div>
-              
+
               <button
                 onClick={generarRecomendacionesComidas}
                 disabled={isGeneratingMeals}
-                className={`w-full px-4 py-3 rounded-xl flex items-center justify-center space-x-2 transition-all duration-300 ${
-                  isGeneratingMeals ? 'bg-green-400' : 'bg-green-600 hover:bg-green-700'
-                } text-white font-medium`}
+                className={`w-full px-4 py-3 rounded-xl flex items-center justify-center space-x-2 transition-all duration-300 ${isGeneratingMeals ? 'bg-green-400' : 'bg-green-600 hover:bg-green-700'
+                  } text-white font-medium`}
               >
                 {isGeneratingMeals ? (
                   <>
@@ -306,7 +308,7 @@ const Recomendaciones = () => {
             </div>
           )}
         </div>
-        
+
         <div className="p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
             <span className="bg-orange-100 p-2 rounded-full mr-3">
@@ -315,7 +317,7 @@ const Recomendaciones = () => {
               </svg>
             </span>
             Recomendación de Comidas
-            
+
           </h2>
           <p className='p-2 text-gray-500'>Para mejores resultados ingrese porciones en sus registros de comida</p>
           {ultimaRecomendacionComidas ? (
