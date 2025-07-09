@@ -62,12 +62,12 @@ const LandingPage = () => {
                         />
                         <ServiceCard 
                             title="Seguimiento de Datos" 
-                            description="Monitorea tu progreso en dieta, ejercicio y sueño con nuestras herramientas de seguimiento."
+                            description="Monitorea tu progreso en de parámetros de salud."
                             image={datos}
                         />
                         <ServiceCard 
-                            title="Planificación de Comidas" 
-                            description="Planifica tus comidas de acuerdo a tus preferencias y necesidades nutricionales."
+                            title="Generacion de recomendaciones personalizadas" 
+                            description="Utiliza nuestros servicios para obtener recomendaciones personalizadas con IA."
                             image={comidas}
                         />
                     </div>
