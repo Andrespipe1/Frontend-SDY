@@ -402,12 +402,26 @@ src/
 
 <table>
   <tr>
-    #Frontend
     <td align="center">
+    <sub>Frontend</sub>
+      <br />
       <a href="https://github.com/Andrespipe1">
         <img src="https://avatars.githubusercontent.com/Andrespipe1" width="100px;" alt=""/>
         <br />
         <sub><b>Andrés Felipe Tufiño Muñoz</b></sub>
+      </a>
+      <br />
+      <sub>Full Stack Developer</sub>
+    </td>
+  </tr>
+    <tr>
+    <td align="center">
+      <sub>Backend</sub>
+      <br />
+      <a href="https://github.com/Wilmer-Vnr">
+        <img src="https://avatars.githubusercontent.com/Wilmer-Vnr" width="100px;" alt=""/>
+        <br />
+        <sub><b>Wilmer Vargas</b></sub>
       </a>
       <br />
       <sub>Full Stack Developer</sub>
