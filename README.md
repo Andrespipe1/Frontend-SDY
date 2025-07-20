@@ -427,15 +427,6 @@ Este proyecto está bajo la Licencia Apache 2.0. Ver el archivo [LICENSE](LICENS
 - 🔄 **Notificación de cambios** - Debes indicar si modificaste el código
 - 📋 **Archivo NOTICE** - Opcional, para información adicional
 
-### ¿Por qué Apache 2.0 para tesis?
-
-- 🎓 **Estándar académico** - Usada por universidades y centros de investigación
-- 🔬 **Protección de investigación** - Protege tu trabajo original
-- 📚 **Reconocimiento formal** - Más apropiada para trabajos académicos
-- ⚖️ **Protección legal robusta** - Incluye cláusulas de patentes
-
-Para más información sobre la Licencia Apache 2.0, visita: [apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
 ---
 
 ## 👨‍💻 Autores
