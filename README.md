@@ -6,7 +6,7 @@
 ![Vite](https://img.shields.io/badge/Vite-6.3.1-646CFF?style=for-the-badge&logo=vite)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.5-38B2AC?style=for-the-badge&logo=tailwind-css)
 ![Node.js](https://img.shields.io/badge/Node.js-16+-339933?style=for-the-badge&logo=node.js)
-![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
+![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)
 
 **Sistema de monitoreo de salud integral para nutricionistas y pacientes**
 
@@ -430,21 +430,32 @@ src/
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está bajo la Licencia Apache 2.0. Ver el archivo [LICENSE](LICENSE) para más detalles.
 
-### ¿Qué permite la Licencia MIT?
+### ¿Qué permite la Licencia Apache 2.0?
 
 - ✅ **Uso comercial** - Puedes usar este código en proyectos comerciales
 - ✅ **Modificación** - Puedes modificar y adaptar el código
 - ✅ **Distribución** - Puedes distribuir el código
 - ✅ **Uso privado** - Puedes usar el código en proyectos privados
+- ✅ **Protección de patentes** - Incluye cláusulas de protección de patentes
+- ✅ **Reconocimiento académico** - Ideal para tesis y proyectos de investigación
 
 ### Requisitos
 
 - 📝 **Atribución** - Debes incluir el copyright original
-- 📄 **Licencia** - Debes incluir una copia de la licencia MIT
+- 📄 **Licencia** - Debes incluir una copia de la licencia Apache 2.0
+- 🔄 **Notificación de cambios** - Debes indicar si modificaste el código
+- 📋 **Archivo NOTICE** - Opcional, para información adicional
 
-Para más información sobre la Licencia MIT, visita: [opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
+### ¿Por qué Apache 2.0 para tesis?
+
+- 🎓 **Estándar académico** - Usada por universidades y centros de investigación
+- 🔬 **Protección de investigación** - Protege tu trabajo original
+- 📚 **Reconocimiento formal** - Más apropiada para trabajos académicos
+- ⚖️ **Protección legal robusta** - Incluye cláusulas de patentes
+
+Para más información sobre la Licencia Apache 2.0, visita: [apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
 ---
 
