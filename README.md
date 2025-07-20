@@ -28,7 +28,6 @@
 - [🧪 Testing](#-testing)
 - [📊 API Endpoints](#-api-endpoints)
 - [🔒 Seguridad](#-seguridad)
-- [📈 Roadmap](#-roadmap)
 - [👨‍💻 Autores](#-autores)
 
 ---
@@ -396,26 +395,6 @@ src/
 - **Logs de auditoría** para acciones críticas
 - **Validación de tokens** en cada request
 - **Manejo seguro de errores** sin exposición de datos
-
----
-
-## 📈 Roadmap
-
-### 🚀 Versión 2.0 (Próximamente)
-
-- [ ] **Integración con wearables** (Apple Watch, Fitbit)
-- [ ] **Análisis de imágenes** de comidas con IA
-- [ ] **Sistema de recordatorios** inteligentes
-- [ ] **Gamificación** del proceso nutricional
-- [ ] **API pública** para desarrolladores
-
-### 🔮 Versión 3.0 (Futuro)
-
-- [ ] **Machine Learning** para predicciones de salud
-- [ ] **Integración con laboratorios** médicos
-- [ ] **Telemedicina** completa con video llamadas
-- [ ] **App móvil** nativa (iOS/Android)
-- [ ] **Blockchain** para historiales médicos
 
 ---
 
