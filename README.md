@@ -6,10 +6,9 @@
 ![Vite](https://img.shields.io/badge/Vite-6.3.1-646CFF?style=for-the-badge&logo=vite)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1.5-38B2AC?style=for-the-badge&logo=tailwind-css)
 ![Node.js](https://img.shields.io/badge/Node.js-16+-339933?style=for-the-badge&logo=node.js)
+![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
 
 **Sistema de monitoreo de salud integral para nutricionistas y pacientes**
-
-
 
 </div>
 
@@ -51,6 +50,7 @@
 ## ✨ Características Principales
 
 ### 🔐 Sistema de Autenticación Avanzado
+
 - **Autenticación JWT** con tokens seguros
 - **Roles diferenciados** (Paciente/Nutricionista)
 - **Recuperación de contraseñas** con tokens temporales
@@ -58,12 +58,14 @@
 - **Protección de rutas** basada en roles
 
 ### 📊 Dashboard Inteligente
+
 - **Estadísticas en tiempo real** de pacientes y progreso
 - **Gráficos interactivos** con Chart.js
 - **Métricas de salud** personalizadas
 - **Indicadores de rendimiento** (KPIs)
 
 ### 👥 Gestión de Pacientes
+
 - **Registro completo** de información personal y médica
 - **Historial médico** detallado con seguimiento temporal
 - **Parámetros de salud** (peso, estatura, IMC, actividad física)
@@ -71,12 +73,14 @@
 - **Análisis de tendencias** de salud
 
 ### 🤖 Recomendaciones con IA
+
 - **Generación automática** de recomendaciones nutricionales
 - **Análisis de patrones** alimenticios
 - **Sugerencias personalizadas** basadas en objetivos de salud
 - **Recomendaciones de ejercicio** según nivel de actividad
 
 ### 📅 Sistema de Citas
+
 - **Agenda inteligente** con disponibilidad en tiempo real
 - **Modalidades mixtas** (presencial/virtual)
 - **Gestión de reuniones** con enlaces automáticos
@@ -84,12 +88,14 @@
 - **Historial de consultas**
 
 ### 💬 Comunicación en Tiempo Real
+
 - **Chat integrado** con Socket.io
 - **Mensajería instantánea** entre usuarios
 - **Notificaciones push** en tiempo real
 - **Historial de conversaciones**
 
 ### 📄 Generación de Reportes
+
 - **Exportación a PDF** de historiales médicos
 - **Reportes personalizados** con datos completos
 - **Gráficos incluidos** en documentos
@@ -100,6 +106,7 @@
 ## 🛠️ Stack Tecnológico
 
 ### Frontend
+
 - **React 18.2.0** - Biblioteca de interfaz de usuario
 - **Vite 6.3.1** - Herramienta de construcción rápida
 - **Tailwind CSS 4.1.5** - Framework CSS utility-first
@@ -107,11 +114,13 @@
 - **Framer Motion 12.15.0** - Animaciones fluidas
 
 ### Gestión de Estado y Datos
+
 - **React Hook Form 7.56.4** - Formularios eficientes
 - **Axios 1.9.0** - Cliente HTTP
 - **Socket.io Client 4.8.1** - Comunicación en tiempo real
 
 ### UI/UX Components
+
 - **React Icons 5.5.0** - Iconografía completa
 - **Heroicons 2.2.0** - Iconos de alta calidad
 - **Lucide React 0.507.0** - Iconos modernos
@@ -119,12 +128,14 @@
 - **React Toastify 11.0.5** - Notificaciones elegantes
 
 ### Utilidades
+
 - **JWT Decode 4.0.0** - Decodificación de tokens
 - **Crypto JS 4.2.0** - Encriptación de datos
 - **jsPDF 3.0.1** - Generación de PDFs
 - **jsPDF AutoTable 5.0.2** - Tablas en PDF
 
 ### Testing
+
 - **Vitest 3.2.3** - Framework de testing
 - **Testing Library** - Utilidades de testing
 - **jsdom 26.1.0** - Entorno DOM para testing
@@ -161,6 +172,7 @@ src/
 ## 📱 Funcionalidades por Rol
 
 ### 👨‍⚕️ Nutricionista
+
 - **Dashboard administrativo** con estadísticas globales
 - **Gestión de pacientes** con búsqueda y filtros
 - **Historial médico completo** de cada paciente
@@ -170,6 +182,7 @@ src/
 - **Reportes médicos** en PDF
 
 ### 👤 Paciente
+
 - **Dashboard personal** con métricas de salud
 - **Registro de parámetros** biométricos
 - **Seguimiento de comidas** diarias
@@ -183,6 +196,7 @@ src/
 ## 🚀 Instalación y Configuración
 
 ### Prerrequisitos
+
 - **Node.js** >= 16.0.0
 - **npm** >= 8.0.0 o **yarn** >= 1.22.0
 - **Git** para clonar el repositorio
@@ -190,12 +204,14 @@ src/
 ### Pasos de Instalación
 
 1. **Clonar el repositorio**
+
 ```bash
 git clone https://github.com/tu-usuario/saludify.git
 cd saludify
 ```
 
 2. **Instalar dependencias**
+
 ```bash
 npm install
 # o
@@ -203,11 +219,13 @@ yarn install
 ```
 
 3. **Configurar variables de entorno**
+
 ```bash
 cp .env.example .env
 ```
 
 4. **Iniciar en modo desarrollo**
+
 ```bash
 npm run dev
 # o
@@ -215,6 +233,7 @@ yarn dev
 ```
 
 5. **Abrir en el navegador**
+
 ```
 http://localhost:5173
 ```
@@ -242,15 +261,15 @@ VITE_PRODUCTION_URL= ******************
 
 ## 📦 Scripts Disponibles
 
-| Comando | Descripción |
-|---------|-------------|
-| `npm run dev` | Inicia el servidor de desarrollo |
-| `npm run build` | Construye la aplicación para producción |
-| `npm run preview` | Vista previa de la versión de producción |
-| `npm run lint` | Ejecuta el linter para verificar código |
-| `npm run test` | Ejecuta las pruebas unitarias |
-| `npm run test:watch` | Ejecuta pruebas en modo watch |
-| `npm run test:coverage` | Genera reporte de cobertura de pruebas |
+| Comando                 | Descripción                              |
+| ----------------------- | ---------------------------------------- |
+| `npm run dev`           | Inicia el servidor de desarrollo         |
+| `npm run build`         | Construye la aplicación para producción  |
+| `npm run preview`       | Vista previa de la versión de producción |
+| `npm run lint`          | Ejecuta el linter para verificar código  |
+| `npm run test`          | Ejecuta las pruebas unitarias            |
+| `npm run test:watch`    | Ejecuta pruebas en modo watch            |
+| `npm run test:coverage` | Genera reporte de cobertura de pruebas   |
 
 ---
 
@@ -285,6 +304,7 @@ El archivo `public/_redirects` está configurado para SPA:
 ## 🧪 Testing
 
 ### Ejecutar Tests
+
 ```bash
 # Tests unitarios
 npm run test
@@ -297,6 +317,7 @@ npm run test:coverage
 ```
 
 ### Estructura de Tests
+
 ```
 src/
 ├── test/
@@ -311,39 +332,46 @@ src/
 ## 📊 API Endpoints
 
 ### Autenticación
+
 - `POST /login` - Inicio de sesión
 - `POST /register` - Registro de usuarios
 - `POST /recuperar-password` - Recuperación de contraseña
 - `PUT /restablecer-password/:token` - Restablecer contraseña
 
 ### Perfiles
+
 - `GET /perfil` - Obtener perfil de paciente
 - `GET /perfilNutri` - Obtener perfil de nutricionista
 - `PUT /perfil-nutricionista/:id` - Actualizar perfil nutricionista
 
 ### Pacientes
+
 - `GET /listar-pacientes` - Listar todos los pacientes
 - `GET /listar-nutricionistas` - Listar nutricionistas
 - `GET /paciente/:id` - Obtener datos de paciente específico
 
 ### Parámetros de Salud
+
 - `GET /paciente/parametro/:id` - Obtener parámetros de paciente
 - `POST /parametros-salud/registro` - Registrar nuevos parámetros
 - `PUT /actualizar-parametro/:id` - Actualizar parámetros
 - `DELETE /eliminar-parametro/:id` - Eliminar parámetros
 
 ### Comidas
+
 - `GET /paciente/comidas/:id` - Obtener historial de comidas
 - `POST /comidas-paciente/registro` - Registrar nueva comida
 - `DELETE /eliminar-comida/:id` - Eliminar comida
 
 ### Citas
+
 - `POST /registrar-cita` - Crear nueva cita
 - `PUT /confirmar-cita/:id` - Confirmar cita
 - `PUT /cancelar-cita/:id` - Cancelar cita
 - `DELETE /eliminar-cita/:id` - Eliminar cita
 
 ### Recomendaciones
+
 - `GET /recomendacionesParametros/:id` - Generar recomendaciones de parámetros
 - `GET /recomendacionesComidas/:id` - Generar recomendaciones de comidas
 - `GET /obtener-recomendaciones/:id` - Obtener recomendaciones existentes
@@ -353,6 +381,7 @@ src/
 ## 🔒 Seguridad
 
 ### Medidas Implementadas
+
 - **Autenticación JWT** con tokens seguros
 - **Validación de roles** en frontend y backend
 - **Sanitización de datos** en formularios
@@ -362,6 +391,7 @@ src/
 - **Validación de entrada** en todos los formularios
 
 ### Buenas Prácticas
+
 - **Principio de menor privilegio** en roles
 - **Logs de auditoría** para acciones críticas
 - **Validación de tokens** en cada request
@@ -372,6 +402,7 @@ src/
 ## 📈 Roadmap
 
 ### 🚀 Versión 2.0 (Próximamente)
+
 - [ ] **Integración con wearables** (Apple Watch, Fitbit)
 - [ ] **Análisis de imágenes** de comidas con IA
 - [ ] **Sistema de recordatorios** inteligentes
@@ -379,6 +410,7 @@ src/
 - [ ] **API pública** para desarrolladores
 
 ### 🔮 Versión 3.0 (Futuro)
+
 - [ ] **Machine Learning** para predicciones de salud
 - [ ] **Integración con laboratorios** médicos
 - [ ] **Telemedicina** completa con video llamadas
@@ -393,6 +425,26 @@ src/
 - **Prettier** para formato consistente
 - **Conventional Commits** para mensajes de commit
 - **Testing** requerido para nuevas funcionalidades
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
+
+### ¿Qué permite la Licencia MIT?
+
+- ✅ **Uso comercial** - Puedes usar este código en proyectos comerciales
+- ✅ **Modificación** - Puedes modificar y adaptar el código
+- ✅ **Distribución** - Puedes distribuir el código
+- ✅ **Uso privado** - Puedes usar el código en proyectos privados
+
+### Requisitos
+
+- 📝 **Atribución** - Debes incluir el copyright original
+- 📄 **Licencia** - Debes incluir una copia de la licencia MIT
+
+Para más información sobre la Licencia MIT, visita: [opensource.org/licenses/MIT](https://opensource.org/licenses/MIT)
 
 ---
 
@@ -444,6 +496,6 @@ src/
 [![GitHub stars](https://img.shields.io/github/stars/Andrespipe1/FRONTEND-SDY?style=social)](https://github.com/Andrespipe1/FRONTEND-SDY)
 [![GitHub forks](https://img.shields.io/github/forks/Andrespipe1/FRONTEND-SDY?style=social)](https://github.com/Andrespipe1/FRONTEND-SDY)
 
-*Construido con ❤️ para mejorar la salud digital*
+_Construido con ❤️ para mejorar la salud digital_
 
 </div>
