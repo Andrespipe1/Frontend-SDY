@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaCalendarAlt, FaClock, FaTrash, FaCheck, FaTimes, FaSearch, FaVideo, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaTrash, FaCheck, FaTimes, FaSearch, FaVideo, FaMapMarkerAlt, FaFlagCheckered } from 'react-icons/fa';
 import Mensaje from '../components/Alerts/Mensaje';
 import ConfirmDeleteModal from '../components/Modals/ConfirmDeleteModal';
 import ConfirmCancelModal from '../components/Modals/ConfirmCancelModal';
+import ConfirmFinalizarModal from '../components/Modals/ConfirmFinalizarModal';
 import { jwtDecode } from 'jwt-decode';
 import { set } from 'react-hook-form';
 const Citas = () => {
@@ -26,6 +27,8 @@ const Citas = () => {
   const [idToDelete, setIdToDelete] = useState(null);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
   const [idToCancel, setIdToCancel] = useState(null);
+  const [isFinalizarModalOpen, setIsFinalizarModalOpen] = useState(false);
+  const [idToFinalizar, setIdToFinalizar] = useState(null);
   const [expandedDescriptions, setExpandedDescriptions] = useState(new Set());
   const [tooltip, setTooltip] = useState({ show: false, text: '', x: 0, y: 0 });
   const token = localStorage.getItem('token');
@@ -337,6 +340,29 @@ const Citas = () => {
     }
   };
 
+  const handleFinalizarCita = async (citaId) => {
+    try {
+      const { data } = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/finalizar-cita/${citaId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      mostrarMensaje({
+        respuesta: data.msg || 'Cita completada correctamente',
+        tipo: true
+      });
+
+      obtenerCitas(userRole, userId);
+    } catch (error) {
+      console.error('Error al finalizar cita:', error);
+      mostrarMensaje({
+        respuesta: error.response?.data?.msg || 'Error al completar cita',
+        tipo: false
+      });
+    }
+  };
+
   const openDeleteModal = (id) => {
     setIdToDelete(id);
     setIsDeleteModalOpen(true);
@@ -370,6 +396,24 @@ const Citas = () => {
       await handleCancelarCita(idToCancel);
     } finally {
       closeCancelModal();
+    }
+  };
+
+  const openFinalizarModal = (id) => {
+    setIdToFinalizar(id);
+    setIsFinalizarModalOpen(true);
+  };
+
+  const closeFinalizarModal = () => {
+    setIdToFinalizar(null);
+    setIsFinalizarModalOpen(false);
+  };
+
+  const confirmFinalizar = async () => {
+    try {
+      await handleFinalizarCita(idToFinalizar);
+    } finally {
+      closeFinalizarModal();
     }
   };
 
@@ -812,6 +856,16 @@ const Citas = () => {
                           </button>
                         )}
 
+                        {userRole === 'nutricionista' && cita.estado === 'confirmada' && (
+                          <button
+                            onClick={() => openFinalizarModal(cita._id)}
+                            className="text-blue-600 hover:text-blue-900 mr-3 cursor-pointer"
+                            title="Completar cita"
+                          >
+                            <FaFlagCheckered size={16} />
+                          </button>
+                        )}
+
                         {(userRole === 'paciente' || (userRole === 'nutricionista' && cita.estado !== 'completada')) && (
                           <button
                             onClick={() => openCancelModal(cita._id)}
@@ -869,6 +923,13 @@ const Citas = () => {
           onClose={closeCancelModal}
           onConfirm={confirmCancel}
           message="¿Estás seguro de que deseas cancelar esta cita?"
+        />
+
+        <ConfirmFinalizarModal
+          isOpen={isFinalizarModalOpen}
+          onClose={closeFinalizarModal}
+          onConfirm={confirmFinalizar}
+          message="¿Estás seguro de que deseas completar esta cita? Esta acción no se puede deshacer."
         />
       </div>
     )
