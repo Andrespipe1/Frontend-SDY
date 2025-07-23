@@ -420,13 +420,6 @@ Este proyecto está bajo la Licencia Apache 2.0. Ver el archivo [LICENSE](LICENS
 - ✅ **Protección de patentes** - Incluye cláusulas de protección de patentes
 - ✅ **Reconocimiento académico** - Ideal para tesis y proyectos de investigación
 
-### Requisitos
-
-- 📝 **Atribución** - Debes incluir el copyright original
-- 📄 **Licencia** - Debes incluir una copia de la licencia Apache 2.0
-- 🔄 **Notificación de cambios** - Debes indicar si modificaste el código
-- 📋 **Archivo NOTICE** - Opcional, para información adicional
-
 ---
 
 ## 👨‍💻 Autores
